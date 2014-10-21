@@ -16,5 +16,14 @@ tweet_collection = {"#twitterblade": [
                             ]
                     }
 
-query_collection = {"#twitterblade": ["#twitterblade", "twitter blade", "twitterblade sufc"]}
+query_collection = {"#twitterblade": 
+                        ["#twitterblade", "twitter blade", "twitterblade sufc sheffield united"]
+                    }
 
+summary_collection = {"#twitterblade": [
+                            {
+                            'sentence': "The football club was formed in 1889 as an offshoot of Sheffield United Cricket Club, and are nicknamed The Blades due to Sheffield's history of steel production.", 
+                            'url': "http://en.wikipedia.org/wiki/Sheffield_United_F.C."
+                            }, 
+                        ]
+                    }
