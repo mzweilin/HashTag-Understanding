@@ -1,15 +1,52 @@
 import twitter
 import json
 
-# XXX: Go to http://dev.twitter.com/apps/new to create an app and get values
-# for these credentials, which you'll need to provide in place of these
-# empty string values that are defined as placeholders.
-# See https://dev.twitter.com/docs/auth/oauth for more information 
-# on Twitter's OAuth implementation.
+jsonResults = []
 
-def retreivePosts(hashtag):
-    initOauth()
-    collectSearchResults(hashtag)
+def retreiveJSON(hashtag):
+	initOauth()
+	global jsonResults
+	jsonResults = collectSearchResults(hashtag)
+
+	jsonFormatted = []
+	for i in range(0,len(jsonResults)):
+		jsonFormatted.append(str(json.dumps(jsonResults[i], indent=1)))
+
+	return jsonFormatted
+
+
+def retreiveTweetText(hashtag):
+	initOauth()
+	global jsonResults
+	jsonResults = collectSearchResults(hashtag)
+	status_texts = [ result['text'] for result in jsonResults ]
+
+	tweetTexts = []
+	for i in range(0,len(status_texts)):
+		tweetTexts.append((json.dumps(status_texts[i], indent=1))[1:-1])
+
+	return tweetTexts
+
+
+def retrieveOtherHashtags(origHashtag):
+	tags = [ hTag['text'] 
+					for json_i in jsonResults
+						for hTag in json_i['entities']['hashtags'] ]
+
+
+	hashtags = []
+	for i in range(0,len(tags)):
+		if ((json.dumps(tags[i], indent=1)[1:-1]).lower() != origHashtag.lower()):
+			hashtags.append((json.dumps(tags[i], indent=1)[1:-1]))
+
+	return hashtags
+
+
+######################################################################
+######################################################################
+######################################################################
+######################################################################
+
 
 def initOauth():
     CONSUMER_KEY = 'K1CCjIXC8ELhqMAkkupTWdQXG'
@@ -42,25 +79,22 @@ def retreiveTrends():
     print json.dumps(us_trends, indent=1)
 
 
-
-
 ################ Collecting search results #################
 def collectSearchResults(hashtag):
-    q = hashtag 
 
     count = 100
 
     # See https://dev.twitter.com/docs/api/1.1/get/search/tweets
 
-    search_results = twitter_api.search.tweets(q=q, count=count)
+    search_results = twitter_api.search.tweets(q=hashtag, count=count)
 
-    statuses = search_results['statuses']
+    jsonResults = search_results['statuses']
 
 
     # Iterate through K more batches of results by following the cursor
-    K = 6
+    K = 0
     for _ in range(K):
-        print "Length of statuses", len(statuses)
+        print "Length of jsonResults", len(jsonResults)
         try:
             next_results = search_results['search_metadata']['next_results']
         except KeyError, e: # No more results when next_results doesn't exist
@@ -71,41 +105,46 @@ def collectSearchResults(hashtag):
         kwargs = dict([ kv.split('=') for kv in next_results[1:].split("&") ])
         
         search_results = twitter_api.search.tweets(**kwargs)
-        statuses += search_results['statuses']
+        jsonResults += search_results['jsonResults']
 
 
     # Show one sample search result by slicing the list...
-    print json.dumps(statuses[0], indent=1)
+    # print str(json.dumps(jsonResults[0], indent=1))
+
+    return jsonResults
 
 
 
     #############################################################
     ## Extracting text, screen names, and hashtags from tweets ##
     #############################################################
+def retrieveData(jsonResults):     
 
-    # for i in statuses:
-        
-    status_texts = [ status['text'] for status in statuses ]
+	jsonResults = jsonResults
 
-    screen_names = [ user_mention['screen_name'] 
-                     for status in statuses
-                         for user_mention in status['entities']['user_mentions'] ]
+	status_texts = [ status['text'] for status in jsonResults ]
 
-    hashtags = [ hashtag['text'] 
-                 for status in statuses
-                     for hashtag in status['entities']['hashtags'] ]
+	screen_names = [ user_mention['screen_name'] 
+	                 for status in jsonResults
+	                     for user_mention in status['entities']['user_mentions'] ]
 
-    status = statuses[4]
-    hashtags = [ hashtag['text'] for hashtag in status['entities']['hashtags'] ]
+	hashtags = [ hashtag['text'] 
+	             for status in jsonResults
+	                 for hashtag in status['entities']['hashtags'] ]
 
-    # Compute a collection of all words from all tweets
-    words = [ w for t in status_texts 
-                  for w in t.split() ]
 
-    # Explore the first 5 items for each...
+	#hashtags = [ hashtag['text'] for hashtag in status['entities']['hashtags'] ]
 
-    print json.dumps(status_texts[0:5], indent=1)
-    print json.dumps(screen_names[0:5], indent=1) 
-    print json.dumps(hashtags[0:5], indent=1)
-    print json.dumps(words[0:5], indent=1)
+	# Compute a collection of all words from all tweets
+	words = [ w for t in status_texts 
+	              for w in t.split() ]
 
+	# Explore the first 5 items for each...
+
+	print json.dumps(status_texts[0:5], indent=1)
+	print json.dumps(screen_names[0:5], indent=1) 
+	print json.dumps(hashtags[0:5], indent=1)
+	print json.dumps(words[0:5], indent=1)
+
+
+	return status_texts
