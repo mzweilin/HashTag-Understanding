@@ -3,6 +3,13 @@ import json
 
 jsonResults = []
 
+# Use this module by running either 
+# retrieveJSON(hashtag), or retrieveTweetText(hashtag)
+# both return an array of either JSON or tweet text elements
+# After calling retrieveTweetText(), you can call 
+# retrieveOtherHashtags(hashtag), which returns all other 
+# hashtags in the tweets with the original hashtag
+
 def retreiveJSON(hashtag):
 	initOauth()
 	global jsonResults
@@ -27,7 +34,7 @@ def retreiveTweetText(hashtag):
 
 	return tweetTexts
 
-
+# returns all other hashtags in the tweets with the original hashtag
 def retrieveOtherHashtags(origHashtag):
 	tags = [ hTag['text'] 
 					for json_i in jsonResults
