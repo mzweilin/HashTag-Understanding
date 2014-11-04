@@ -4,6 +4,7 @@
 import urllib
 import urllib.request
 import json
+import keys
  
 def main():
     query = "#test"
@@ -11,14 +12,17 @@ def main():
  
 def bing_search(query, search_type):
     #search_type: Web, Image, News, Video
-    key= 'MEL5FOrb1H5G1E78YY8N5mkfcvUK2hNBYsZl1aAEEbE' #TODO free tier key, should probably be in private keys file
+    key = keys.bing
+    print(key)
     query = urllib.parse.quote(query)
     # create credential for authentication
     user_agent = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; FDM; .NET CLR 2.0.50727; InfoPath.2; .NET CLR 1.1.4322)'
-    credentials = (':%s' % key).encode()[:-1]
+    credentials = (':%s' % key).encode()
+    print(credentials)
     auth = 'Basic %s' % credentials
     url = 'https://api.datamarket.azure.com/Data.ashx/Bing/Search/'+search_type+'?Query=%27'+query+'%27&$top=5&$format=json'
     request = urllib.request.Request(url)
+    print(auth)
     request.add_header('Authorization', auth)
     request.add_header('User-Agent', user_agent)
     request_opener = urllib.request.build_opener()
