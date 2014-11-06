@@ -2,6 +2,7 @@ import twitter
 import json
 
 jsonResults = []
+twitter_api = None
 
 # Use this module by running either 
 # retrieveJSON(hashtag), or retrieveTweetText(hashtag)
@@ -63,6 +64,7 @@ def initOauth():
 
     auth = twitter.oauth.OAuth(OAUTH_TOKEN, OAUTH_TOKEN_SECRET, CONSUMER_KEY, CONSUMER_SECRET)
 
+    global twitter_api
     twitter_api = twitter.Twitter(auth=auth)
 
 #################### Retrieving trends #####################
@@ -155,3 +157,9 @@ def retrieveData(jsonResults):
 
 
 	return status_texts
+
+if __name__ == "__main__":
+	hashtag = "ahsfreakshow"
+	t = retreiveTweetText(hashtag)
+	for tw in t:
+		print tw
