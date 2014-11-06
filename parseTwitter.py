@@ -11,7 +11,7 @@ twitter_api = None
 # retrieveOtherHashtags(hashtag), which returns all other 
 # hashtags in the tweets with the original hashtag
 
-def retreiveJSON(hashtag):
+def retrieveJSON(hashtag):
 	initOauth()
 	global jsonResults
 	jsonResults = collectSearchResults(hashtag)
@@ -23,7 +23,7 @@ def retreiveJSON(hashtag):
 	return jsonFormatted
 
 
-def retreiveTweetText(hashtag):
+def retrieveTweetText(hashtag):
 	initOauth()
 	global jsonResults
 	jsonResults = collectSearchResults(hashtag)
@@ -68,7 +68,7 @@ def initOauth():
     twitter_api = twitter.Twitter(auth=auth)
 
 #################### Retrieving trends #####################
-def retreiveTrends():
+def retrieveTrends():
     # The Yahoo! Where On Earth ID for the entire world is 1.
     # See https://dev.twitter.com/docs/api/1.1/get/trends/place and
     # http://developer.yahoo.com/geo/geoplanet/
@@ -160,6 +160,6 @@ def retrieveData(jsonResults):
 
 if __name__ == "__main__":
 	hashtag = "ahsfreakshow"
-	t = retreiveTweetText(hashtag)
+	t = retrieveTweetText(hashtag)
 	for tw in t:
 		print tw
