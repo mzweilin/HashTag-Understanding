@@ -21,7 +21,8 @@ class QueryGenerator:
 
         doc_str = ""
         for tweet in tweets:
-            doc_str += tweet['content'] + ' '
+            #doc_str += tweet['content'] + ' '
+            doc_str += tweet + ' '
 
         self.analyse_doc(doc_str)
 
