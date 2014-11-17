@@ -9,7 +9,7 @@ def main():
 def search(query, num_results):
     urls = []
     file_path = "queries/" + query 
-    cmd = ["ruby bing_search.rb " + ('%s ' % query) + num_results]
+    cmd = "ruby bing_search.rb " + ('%s ' % query) + str(num_results)
     if not os.path.exists(file_path):
         with open(file_path, mode="w") as f:
             proc.call(cmd, shell=True, stdout=f)

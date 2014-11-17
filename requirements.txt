@@ -1,3 +1,4 @@
 nltk==3.0.0
 twitter==1.15.0
 wordsegment==0.3
+flask==0.10.1

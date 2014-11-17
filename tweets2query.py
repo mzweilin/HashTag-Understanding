@@ -81,8 +81,8 @@ def test():
 
     for (hashtag, tweets) in tweet_collection.items():
         query_list = qgen.gen_query_list(hashtag, tweets)
-        print "Query list for \"%s\" is " % hashtag
-        print query_list
+        print("Query list for \"%s\" is " % hashtag)
+        print(query_list)
 
 if __name__ == "__main__":
     test()

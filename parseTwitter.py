@@ -83,9 +83,8 @@ def retrieveTrends():
     world_trends = twitter_api.trends.place(_id=WORLD_WOE_ID)
     us_trends = twitter_api.trends.place(_id=US_WOE_ID)
 
-    print json.dumps(world_trends, indent=1)
-    print
-    print json.dumps(us_trends, indent=1)
+    print(json.dumps(world_trends, indent=1))
+    print(json.dumps(us_trends, indent=1))
 
 
 ################ Collecting search results #################
@@ -103,10 +102,10 @@ def collectSearchResults(hashtag):
     # Iterate through K more batches of results by following the cursor
     K = 0
     for _ in range(K):
-        print "Length of jsonResults", len(jsonResults)
+        print("Length of jsonResults", len(jsonResults))
         try:
             next_results = search_results['search_metadata']['next_results']
-        except KeyError, e: # No more results when next_results doesn't exist
+        except KeyError as e: # No more results when next_results doesn't exist
             break
             
         # Create a dictionary from next_results, which has the following form:
@@ -118,7 +117,7 @@ def collectSearchResults(hashtag):
 
 
     # Show one sample search result by slicing the list...
-    # print str(json.dumps(jsonResults[0], indent=1))
+    # print(str(json.dumps(jsonResults[0], indent=1)))
 
     return jsonResults
 
@@ -150,10 +149,10 @@ def retrieveData(jsonResults):
 
 	# Explore the first 5 items for each...
 
-	print json.dumps(status_texts[0:5], indent=1)
-	print json.dumps(screen_names[0:5], indent=1) 
-	print json.dumps(hashtags[0:5], indent=1)
-	print json.dumps(words[0:5], indent=1)
+	print(json.dumps(status_texts[0:5], indent=1))
+	print(json.dumps(screen_names[0:5], indent=1))
+	print(json.dumps(hashtags[0:5], indent=1))
+	print(json.dumps(words[0:5], indent=1))
 
 
 	return status_texts
@@ -162,4 +161,4 @@ if __name__ == "__main__":
 	hashtag = "ahsfreakshow"
 	t = retrieveTweetText(hashtag)
 	for tw in t:
-		print tw
+		print(tw)
