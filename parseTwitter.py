@@ -2,7 +2,8 @@ import twitter
 import json
 
 jsonResults = []
-twitter_api = None
+twitter_api = ''
+K = 1
 
 # Use this module by running either 
 # retrieveJSON(hashtag), or retrieveTweetText(hashtag)
@@ -11,7 +12,9 @@ twitter_api = None
 # retrieveOtherHashtags(hashtag), which returns all other 
 # hashtags in the tweets with the original hashtag
 
-def retrieveJSON(hashtag):
+def retrieveJSON(hashtag, hundredsOfTweets):
+	global K
+	K = hundredsOfTweets
 	initOauth()
 	global jsonResults
 	jsonResults = collectSearchResults(hashtag)
@@ -23,7 +26,9 @@ def retrieveJSON(hashtag):
 	return jsonFormatted
 
 
-def retrieveTweetText(hashtag):
+def retrieveTweetText(hashtag, hundredsOfTweets):
+	global K
+	K = hundredsOfTweets
 	initOauth()
 	global jsonResults
 	jsonResults = collectSearchResults(hashtag)
@@ -36,7 +41,9 @@ def retrieveTweetText(hashtag):
 	return tweetTexts
 
 # returns all other hashtags in the tweets with the original hashtag
-def retrieveOtherHashtags(origHashtag):
+def retrieveOtherHashtags(origHashtag, hundredsOfTweets):
+	global K
+	K = hundredsOfTweets
 	tags = [ hTag['text'] 
 					for json_i in jsonResults
 						for hTag in json_i['entities']['hashtags'] ]
@@ -100,7 +107,8 @@ def collectSearchResults(hashtag):
 
 
     # Iterate through K more batches of results by following the cursor
-    K = 0
+    global K
+    K -= 1
     for _ in range(K):
         print("Length of jsonResults", len(jsonResults))
         try:
@@ -113,7 +121,7 @@ def collectSearchResults(hashtag):
         kwargs = dict([ kv.split('=') for kv in next_results[1:].split("&") ])
         
         search_results = twitter_api.search.tweets(**kwargs)
-        jsonResults += search_results['jsonResults']
+        jsonResults += search_results['statuses']
 
 
     # Show one sample search result by slicing the list...
