@@ -57,3 +57,5 @@ target/
 # Project specific:
 # Credentials file
 keys.py
+creds.yaml
+queries/*

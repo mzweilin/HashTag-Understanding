@@ -1,5 +1,9 @@
 nltk==3.0.0
 twitter==1.15.0
 wordsegment==0.3
+<<<<<<< HEAD
+flask==0.10.1
+=======
 pymysql==0.6.2
 -e git+http://github.com/NikolaiT/GoogleScraper#egg=GoogleScraper
+>>>>>>> 6d6cf61c92fe2860cb55dfc362639799ccf278f0
