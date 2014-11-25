@@ -113,7 +113,7 @@ def collectSearchResults(hashtag):
     global K
     K = K - 1
     for _ in range(K):
-        print("Length of jsonResults", len(jsonResults))
+        #print("Length of jsonResults", len(jsonResults))
         try:
             next_results = search_results['search_metadata']['next_results']
         except KeyError as e: # No more results when next_results doesn't exist

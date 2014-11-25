@@ -13,11 +13,14 @@ class Request:
         self.hashtag = hashtag.strip("#" + string.whitespace)
 
     def execute(self):
+        urls = []
         generator = QueryGenerator()
-        tweets = twitter.retrieveTweetText(self.hashtag)
-        query_terms = generator.gen_query_list(self.hashtag, tweets)
-        self.query = query_terms[0] #TODO fix this
-        urls = bing.search(self.query, 10)
+        tweets = twitter.retrieveTweetText(self.hashtag, 5)
+        queries = generator.gen_query_list(self.hashtag, tweets)
+        for query in queries: 
+            if isinstance(query, list): 
+                query = " ".join(query)
+            urls.append(bing.search(query, 5))
         return urls
 
 if __name__ == "__main__":
