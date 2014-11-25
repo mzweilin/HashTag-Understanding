@@ -20,7 +20,7 @@ class Job:
         for query in queries: 
             if isinstance(query, list): 
                 query = " ".join(query)
-            urls.append(bing.search(query, 5))
+            urls = urls + bing.search(query, 5)
         return urls
 
 if __name__ == "__main__":
