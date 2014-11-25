@@ -6,3 +6,7 @@ end
 task :clean do
   `rm -f queries/*`
 end
+
+task :launch do
+  `python3 api.py || python api.py`
+end
