@@ -3,5 +3,5 @@ task :setup do
 end
 
 task :launch do
-  `python api.py`
+  `python server.py`
 end
