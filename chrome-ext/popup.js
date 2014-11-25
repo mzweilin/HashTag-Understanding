@@ -5,8 +5,7 @@ var hashtagLookup = {
    * @type {string}
    * @private
    */
-  searchHashtag_: 'http://127.0.0.1:5000/' +
-      'query='+ encodeURIComponent("#HelloWorld")
+  searchHashtag_: 'http://127.0.0.1:5000/query/' + encodeURIComponent("#HelloWorld"),
 
   /**
    * Sends an XHR GET request to grab hashtag reference urls. The
@@ -17,7 +16,8 @@ var hashtagLookup = {
   requestReferences: function() {
     var req = new XMLHttpRequest();
     req.open("GET", this.searchHashtag_, true);
-    req.onload = this.showRefernces_.bind(this);
+    console.warn(req.responseText)
+    req.onload = this.showReferences_.bind(this);
     req.send(null);
   },
 
