@@ -1,4 +1,4 @@
-from bing_search_api import BingSearchAPI 
+from bing_search_api impoqrt BingSearchAPI 
 my_key = "MEL5FOrb1H5G1E78YY8N5mkfcvUK2hNBYsZl1aAEEbE"
 
 def query(query_string):
@@ -11,5 +11,6 @@ def query(query_string):
 
     return [result['Url'] for result in results['d']['results'][0]['Web']]
 
-query_string = "Your Query"
-print query(query_string)
+if __name__ == "__main__":
+    query_string = "Your Query"
+    print query(query_string)
