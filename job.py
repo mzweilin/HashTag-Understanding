@@ -1,6 +1,6 @@
-import bing_search as bing
-import parseTwitter as twitter
-from tweets2query import QueryGenerator 
+import lib.search.bing_search as bing
+import lib.tweet.parseTwitter as twitter
+from lib.querygen.tweets2query import QueryGenerator 
 import string
 
 def main():
