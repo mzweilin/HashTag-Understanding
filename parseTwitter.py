@@ -26,9 +26,12 @@ def retrieveJSON(hashtag, hundredsOfTweets):
 	return jsonFormatted
 
 
-def retrieveTweetText(hashtag, hundredsOfTweets):
+def retrieveTweetText(hashtag, *hundredsOfTweets):
 	global K
-	K = hundredsOfTweets
+	if len(hundredsOfTweets) == 0:
+		K = 1
+	else:
+		K = hundredsOfTweets[0]
 	initOauth()
 	global jsonResults
 	jsonResults = collectSearchResults(hashtag)
@@ -108,9 +111,9 @@ def collectSearchResults(hashtag):
 
     # Iterate through K more batches of results by following the cursor
     global K
-    K -= 1
+    K = K - 1
     for _ in range(K):
-        print("Length of jsonResults", len(jsonResults))
+        #print("Length of jsonResults", len(jsonResults))
         try:
             next_results = search_results['search_metadata']['next_results']
         except KeyError as e: # No more results when next_results doesn't exist
