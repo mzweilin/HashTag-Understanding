@@ -1,0 +1,13 @@
+from bing_search_api import BingSearchAPI 
+
+my_key = "MEL5FOrb1H5G1E78YY8N5mkfcvUK2hNBYsZl1aAEEbE"
+query_string = "Your Query"
+bing = BingSearchAPI(my_key)
+params = {'ImageFilters':'"Face:Face"',
+          '$format': 'json',
+          '$top': 10,
+          '$skip': 0}
+results = bing.search('image+web',query_string,params).json() # requests 1.0+ 
+
+for i in range(10):
+	print results['d']['results'][0]['Web'][i]['Url']
