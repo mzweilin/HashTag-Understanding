@@ -4,11 +4,11 @@ from tweets2query import QueryGenerator
 import string
 
 def main():
-    req  = Request(" #hello_world")
-    urls = req.execute()
+    job  = Job(" #hello_world")
+    urls = job.execute()
     print(urls)
 
-class Request:
+class Job: 
     def __init__(self, hashtag):
         self.hashtag = hashtag.strip("#" + string.whitespace)
 
