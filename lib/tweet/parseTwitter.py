@@ -56,7 +56,7 @@ def retrieveTweetText(hashtag, *hundredsOfTweets):
 			#print unicodedata.normalize('NFKD', trend).encode('ascii','ignore').translate(None, '#')
 			if (unicodedata.normalize('NFKD', trend).encode('ascii','ignore').translate(None, '#') in otherTags):
 				count += 1
-		print count
+		#print count
 
 
 		if count < 3:
