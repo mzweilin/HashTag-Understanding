@@ -1,9 +1,13 @@
 import twitter
 import json
+import unicodedata
 
+filterTrends = 1
 jsonResults = []
 twitter_api = ''
-K = 1
+K = 2
+
+
 
 # Use this module by running either 
 # retrieveJSON(hashtag), or retrieveTweetText(hashtag)
@@ -12,18 +16,7 @@ K = 1
 # retrieveOtherHashtags(hashtag), which returns all other 
 # hashtags in the tweets with the original hashtag
 
-def retrieveJSON(hashtag, hundredsOfTweets):
-	global K
-	K = hundredsOfTweets
-	initOauth()
-	global jsonResults
-	jsonResults = collectSearchResults(hashtag)
 
-	jsonFormatted = []
-	for i in range(0,len(jsonResults)):
-		jsonFormatted.append(str(json.dumps(jsonResults[i], indent=1)))
-
-	return jsonFormatted
 
 
 def retrieveTweetText(hashtag, *hundredsOfTweets):
@@ -37,16 +30,60 @@ def retrieveTweetText(hashtag, *hundredsOfTweets):
 	jsonResults = collectSearchResults(hashtag)
 	status_texts = [ result['text'] for result in jsonResults ]
 
+	if (filterTrends == 1):
+		currTrends = retrieveTrends()
+		try:
+			currTrends.remove(hashtag)
+		except ValueError:
+			pass
+	else:
+		currTrends = []
+	
+	
 	tweetTexts = []
+
+
 	for i in range(0,len(status_texts)):
-		tweetTexts.append((json.dumps(status_texts[i], indent=1))[1:-1])
+		json_i = jsonResults[i]
+		tags = [ hTag['text'] for hTag in json_i['entities']['hashtags'] ]
+		otherTags = []
+		for i in range(0,len(tags)):
+			if ((json.dumps(tags[i], indent=1)[1:-1]).lower() != hashtag.lower()):
+				otherTags.append((json.dumps(tags[i], indent=1)[1:-1]))
+
+		count = 0
+		for trend in currTrends:
+			#print unicodedata.normalize('NFKD', trend).encode('ascii','ignore').translate(None, '#')
+			if (unicodedata.normalize('NFKD', trend).encode('ascii','ignore').translate(None, '#') in otherTags):
+				count += 1
+		print count
+
+
+		if count < 3:
+			tweetTexts.append((json.dumps(status_texts[i], indent=1))[1:-1])
 
 	return tweetTexts
 
-# returns all other hashtags in the tweets with the original hashtag
-def retrieveOtherHashtags(origHashtag, hundredsOfTweets):
+
+def retrieveJSON(hashtag, *hundredsOfTweets):
 	global K
-	K = hundredsOfTweets
+	if len(hundredsOfTweets) == 0:
+		K = 1
+	else:
+		K = hundredsOfTweets[0]
+	initOauth()
+	global jsonResults
+	jsonResults = collectSearchResults(hashtag)
+
+	jsonFormatted = []
+	for i in range(0,len(jsonResults)):
+		jsonFormatted.append(str(json.dumps(jsonResults[i], indent=1)))
+
+	return jsonFormatted
+
+
+# returns all other hashtags in the tweets with the original hashtag
+def retrieveOtherHashtags(origHashtag, *hundredsOfTweets):
 	tags = [ hTag['text'] 
 					for json_i in jsonResults
 						for hTag in json_i['entities']['hashtags'] ]
@@ -79,22 +116,20 @@ def initOauth():
 
 #################### Retrieving trends #####################
 def retrieveTrends():
-    # The Yahoo! Where On Earth ID for the entire world is 1.
-    # See https://dev.twitter.com/docs/api/1.1/get/trends/place and
-    # http://developer.yahoo.com/geo/geoplanet/
+	WORLD_WOE_ID = 1
+	world_trends = twitter_api.trends.place(_id=WORLD_WOE_ID)
 
-    WORLD_WOE_ID = 1
-    US_WOE_ID = 23424977
+    #US_WOE_ID = 23424977
+    #us_trends = twitter_api.trends.place(_id=US_WOE_ID)
 
-    # Prefix ID with the underscore for query string parameterization.
-    # Without the underscore, the twitter package appends the ID value
-    # to the URL itself as a special case keyword argument.
+    #print(json.dumps(world_trends, indent=1))
+	#print(json.dumps(us_trends, indent=1))
 
-    world_trends = twitter_api.trends.place(_id=WORLD_WOE_ID)
-    us_trends = twitter_api.trends.place(_id=US_WOE_ID)
+	trends = []
+	for trend in world_trends[0]['trends']:
+		trends.append(trend['name'])
 
-    print(json.dumps(world_trends, indent=1))
-    print(json.dumps(us_trends, indent=1))
+	return trends
 
 
 ################ Collecting search results #################
@@ -167,6 +202,11 @@ def retrieveData(jsonResults):
 
 
 	return status_texts
+
+
+	
+
+
 
 if __name__ == "__main__":
 	hashtag = "ahsfreakshow"
