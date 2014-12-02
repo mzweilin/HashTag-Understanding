@@ -2,6 +2,7 @@ import twitter
 import json
 import unicodedata
 import re
+import operator
 
 filterTrends = 0
 jsonResults = []
@@ -9,27 +10,16 @@ twitter_api = ''
 K = 2
 
 # Use this module by running either 
-# retrieveJSON(hashtag), or retrieveTweetText(hashtag)
+# getJSON(hashtag), or retrieveTweetText(hashtag)
 # both return an array of either JSON or tweet text elements
 # After calling retrieveTweetText(), you can call 
-# retrieveOtherHashtags(hashtag), which returns all other 
+# getOtherHashtags(hashtag), which returns all other 
 # hashtags in the tweets with the original hashtag
 
-def retrieveJSON(hashtag, hundredsOfTweets):
-	global K
-	K = hundredsOfTweets
-	initOauth()
-	global jsonResults
-	jsonResults = collectSearchResults(hashtag)
-
-	jsonFormatted = []
-	for i in range(0,len(jsonResults)):
-		jsonFormatted.append(str(json.dumps(jsonResults[i], indent=1)))
-
-	return jsonFormatted
 
 
-def retrieveTweetText(hashtag, hundredsOfTweets=2, filterEmoticons = 0):
+
+def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=0, filterEmoticons=0, caseSensitive = 0):
 	global K
 
 	K = hundredsOfTweets
@@ -39,7 +29,7 @@ def retrieveTweetText(hashtag, hundredsOfTweets=2, filterEmoticons = 0):
 	status_texts = [ result['text'] for result in jsonResults ]
 
 	if (filterTrends == 1):
-		currTrends = retrieveTrends()
+		currTrends = getTrends()
 		try:
 			currTrends.remove(hashtag)
 		except ValueError:
@@ -64,30 +54,66 @@ def retrieveTweetText(hashtag, hundredsOfTweets=2, filterEmoticons = 0):
 		# 		count += 1
 
 		#Remove links
-		status_texts[i] = re.sub(r"(http|https)://\S+", "", status_texts[i])
+		if filterURL == 1:
+			status_texts[i] = re.sub(r"(http|https)://\S+", "", status_texts[i])
 
 		#Remove emoticons
 		if filterEmoticons == 1:
 			status_texts[i] = unicode(re.sub(r"\\u\S+", "", unicodedata.normalize('NFKD', status_texts[i]).encode('ascii','ignore')))
 
+		#Remove usernames
+		#status_texts[i] = unicode(re.sub(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)", "", unicodedata.normalize('NFKD', status_texts[i]).encode('ascii','ignore')))
+
 		#if count < 3:
-		tweetTexts.append((json.dumps(status_texts[i], indent=1))[1:-1])
+
+		TEXT = (json.dumps(status_texts[i], indent=1))[1:-1]
+		if caseSensitive == 1:
+			if hashtag in TEXT:
+				tweetTexts.append(TEXT)
+		else:
+			tweetTexts.append(TEXT)
 
 	return tweetTexts
 
-# returns all other hashtags in the tweets with the original hashtag
-def retrieveOtherHashtags(origHashtag, hundredsOfTweets):
+
+def getJSON(hashtag, hundredsOfTweets):
 	global K
+	K = hundredsOfTweets
+	initOauth()
+	global jsonResults
+	jsonResults = collectSearchResults(hashtag)
+
+	jsonFormatted = []
+	for i in range(0,len(jsonResults)):
+		jsonFormatted.append(str(json.dumps(jsonResults[i], indent=1)))
+
+	return jsonFormatted
+
+# returns all other hashtags in the tweets with the original hashtag
+def retrieveRelatedHashtags(origHashtag, hundredsOfTweets=2):
+	global K
+	retrieveTweetText(origHashtag, hundredsOfTweets, 1, 1)
 	K = hundredsOfTweets
 	tags = [ hTag['text'] 
 					for json_i in jsonResults
 						for hTag in json_i['entities']['hashtags'] ]
 
 
-	hashtags = []
+	hashtagsDict = {}
+	origHashtagNoPound = origHashtag.replace("#","")
 	for i in range(0,len(tags)):
-		if ((json.dumps(tags[i], indent=1)[1:-1]).lower() != origHashtag.lower()):
-			hashtags.append((json.dumps(tags[i], indent=1)[1:-1]))
+		if ((json.dumps(tags[i], indent=1)[1:-1]).lower() != origHashtagNoPound.lower()):
+			key = (json.dumps(tags[i], indent=1)[1:-1])
+			if key in hashtagsDict:
+				hashtagsDict[key] += 1
+			else:
+				hashtagsDict[key] = 1
+
+	hashtagsDict = sorted(hashtagsDict.items(), key=operator.itemgetter(1), reverse=True)	
+
+	hashtags = []
+	for i in range(0,4):
+		hashtags.append(hashtagsDict[i][0])
 
 	return hashtags
 
@@ -110,7 +136,7 @@ def initOauth():
     twitter_api = twitter.Twitter(auth=auth)
 
 #################### Retrieving trends #####################
-def retrieveTrends():
+def getTrends():
     # The Yahoo! Where On Earth ID for the entire world is 1.
     # See https://dev.twitter.com/docs/api/1.1/get/trends/place and
     # http://developer.yahoo.com/geo/geoplanet/
@@ -174,7 +200,7 @@ def collectSearchResults(hashtag):
     #############################################################
     ## Extracting text, screen names, and hashtags from tweets ##
     #############################################################
-def retrieveData(jsonResults):     
+def getData(jsonResults):     
 
 	jsonResults = jsonResults
 
