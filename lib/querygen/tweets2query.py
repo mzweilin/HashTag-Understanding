@@ -12,7 +12,10 @@ class QueryGenerator:
         #self.freq_n_grams = freq_n_grams
         #self.top_k_terms = top_k_terms
         self.ngrams_tops = {1:3, 2: 1, 3:1}
+        self.stemming = False
+
         self.counters = {}
+        
 
     def gen_query_list(self, hashtag, tweets):
         q_list = []
@@ -49,7 +52,10 @@ class QueryGenerator:
         for token in tokenizer.tokenize(doc_str):
             if token in punc_list:
                 continue
-            token_norm = stemmer.stem(token.lower())
+            if self.stemming:
+            	token_norm = stemmer.stem(token.lower())
+            else:
+            	token_norm = token.lower()
             tokens.append(token_norm)
         return tokens
 
@@ -75,11 +81,18 @@ class QueryGenerator:
         return ["#twitterblade", "twitter blade", "twitterblade sufc"]
 
 def test():
-    from sample_data import tweet_collection
+    #from sample_data import tweet_collection
+    #import os
+    #os.chdir('../')
+    from tweet.parseTwitter import retrieveTweetText
+
+    hashtag = "twitterblades"
+    tweets = retrieveTweetText(hashtag)
+    tweet_collection = ((hashtag, tweets))
 
     qgen = QueryGenerator()
 
-    for (hashtag, tweets) in tweet_collection.items():
+    for (hashtag, tweets) in tweet_collection:
         query_list = qgen.gen_query_list(hashtag, tweets)
         print("Query list for \"%s\" is " % hashtag)
         print(query_list)
