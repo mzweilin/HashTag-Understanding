@@ -19,7 +19,7 @@ K = 2
 
 
 
-def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=0, filterEmoticons=0):
+def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=0, filterEmoticons=0, caseSensitive = 0):
 	global K
 
 	K = hundredsOfTweets
@@ -66,7 +66,12 @@ def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=0, filterEmoticons=
 
 		#if count < 3:
 
-		tweetTexts.append((json.dumps(status_texts[i], indent=1))[1:-1])
+		TEXT = (json.dumps(status_texts[i], indent=1))[1:-1]
+		if caseSensitive == 1:
+			if hashtag in TEXT:
+				tweetTexts.append(TEXT)
+		else:
+			tweetTexts.append(TEXT)
 
 	return tweetTexts
 
