@@ -19,8 +19,10 @@ class QueryGenerator:
 
     def gen_query_list(self, hashtag, tweets):
         q_list = []
-        q_list.append(hashtag)
-        q_list.append(segment(hashtag[1:]))
+        q_list.append("#"+hashtag)
+        segs = segment(hashtag)
+        if len(segs) > 1:
+        	q_list.append(segs)
 
         doc_str = ""
         for tweet in tweets:
