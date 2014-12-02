@@ -1,10 +1,11 @@
 import twitter
 import json
+import unicodedata
 
 filterTrends = 0
 jsonResults = []
 twitter_api = ''
-K = 1
+K = 2
 
 # Use this module by running either 
 # retrieveJSON(hashtag), or retrieveTweetText(hashtag)
@@ -30,7 +31,7 @@ def retrieveJSON(hashtag, hundredsOfTweets):
 def retrieveTweetText(hashtag, *hundredsOfTweets):
 	global K
 	if len(hundredsOfTweets) == 0:
-		K = 1
+		K = 2
 	else:
 		K = hundredsOfTweets[0]
 	initOauth()
@@ -148,7 +149,9 @@ def collectSearchResults(hashtag):
         # ?max_id=313519052523986943&q=NCAA&include_entities=1
         kwargs = dict([ kv.split('=') for kv in next_results[1:].split("&") ])
         
-        search_results = twitter_api.search.tweets(**kwargs)
+        x = unicodedata.normalize('NFKD',  kwargs[u'max_id']).encode('ascii','ignore')
+
+        search_results = twitter_api.search.tweets(q=removedRT, count=count, max_id=x)
         jsonResults += search_results['statuses']
 
 
@@ -156,6 +159,9 @@ def collectSearchResults(hashtag):
     # print(str(json.dumps(jsonResults[0], indent=1)))
 
     return jsonResults
+
+  
+
 
 
 
