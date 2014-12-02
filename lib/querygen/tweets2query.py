@@ -12,7 +12,7 @@ def get_stopwords(file_name = './stopwords.txt'):
     return [line.strip()  for line in lines]
 
 stopwords = get_stopwords('./english.stop')
-extra_stopwords = ["'s", "''", "..."]
+extra_stopwords = ["'s", "''", "...", "--"]
 for word in extra_stopwords:
     stopwords.append(word)
 
@@ -22,12 +22,14 @@ class QueryGenerator:
         #self.top_k_terms = top_k_terms
         self.ngrams_tops = ngrams_tops
         self.stemming = False
-        self.stopwords = True
+        self.stopwords_filter = True
 
         self.counters = {}
         
     #expected input likes: hashtag="#twitterblades"
-    def gen_query_list(self, hashtag, tweets):
+    def gen_query_list(self, hashtag, tweets, stopwords_filter=True, stemming=False):
+        self.stemming = stemming
+        self.stopwords_filter = stopwords_filter
         q_list = []
         q_list.append(hashtag)
         segs = segment(hashtag[1:])
@@ -68,10 +70,11 @@ class QueryGenerator:
             if token in punc_list:
                 continue
             if self.stemming:
-                token_norm = stemmer.stem(token.lower())
+                token_norm = stemmer.stem(token)
             else:
                 token_norm = token.lower()
-            if self.stopwords and token in stopwords:
+                
+            if self.stopwords_filter and token_norm in stopwords:
                 continue
             tokens.append(token_norm)
         return tokens
