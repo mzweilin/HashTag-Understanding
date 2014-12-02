@@ -7,22 +7,32 @@ stemmer = EnglishStemmer()
 tokenizer = nltk.tokenize.treebank.TreebankWordTokenizer()
 punc_list = list(string.punctuation)
 
+def get_stopwords(file_name = './stopwords.txt'):
+    lines = open(file_name).readlines()
+    return [line.strip()  for line in lines]
+
+stopwords = get_stopwords('./english.stop')
+extra_stopwords = ["'s", "''", "..."]
+for word in extra_stopwords:
+    stopwords.append(word)
+
 class QueryGenerator:
-    def __init__(self, ngrams_tops = {1:3, 2: 1, 3:1}):
+    def __init__(self, ngrams_tops = {1:2, 2: 1, 3:1}):
         #self.freq_n_grams = freq_n_grams
         #self.top_k_terms = top_k_terms
-        self.ngrams_tops = {1:3, 2: 1, 3:1}
+        self.ngrams_tops = ngrams_tops
         self.stemming = False
+        self.stopwords = True
 
         self.counters = {}
         
-
+    #expected input likes: hashtag="#twitterblades"
     def gen_query_list(self, hashtag, tweets):
         q_list = []
-        q_list.append("#"+hashtag)
-        segs = segment(hashtag)
+        q_list.append(hashtag)
+        segs = segment(hashtag[1:])
         if len(segs) > 1:
-        	q_list.append(segs)
+            q_list.append(' '.join(segs))
 
         doc_str = ""
         for tweet in tweets:
@@ -31,8 +41,11 @@ class QueryGenerator:
 
         self.analyse_doc(doc_str)
 
+        for ngram in [1,2,3]:
+            print self.counters[ngram].most_common(10)
+
         for (n, tops) in self.ngrams_tops.items():
-            q_list.append(self.get_sorted_tokens(n, tops))
+            q_list.append(' '.join(self.get_sorted_tokens(n, tops)))
 
         return q_list
 
@@ -55,9 +68,11 @@ class QueryGenerator:
             if token in punc_list:
                 continue
             if self.stemming:
-            	token_norm = stemmer.stem(token.lower())
+                token_norm = stemmer.stem(token.lower())
             else:
-            	token_norm = token.lower()
+                token_norm = token.lower()
+            if self.stopwords and token in stopwords:
+                continue
             tokens.append(token_norm)
         return tokens
 
