@@ -40,12 +40,24 @@ class QueryGenerator:
             if len(segs) > 1:
                 q_list.append(' '.join(segs))
 
-        doc_str = ""
-        for tweet in tweets:
-            #doc_str += tweet['content'] + ' '
-            doc_str += tweet + ' '
+        # doc_str = ""
+        # for tweet in tweets:
+        #     #doc_str += tweet['content'] + ' '
+        #     doc_str += tweet + ' '
 
-        self.analyse_doc(doc_str)
+        # self.analyse_doc(doc_str)
+
+        for n in self.ngrams_tops.keys():
+            self.counters[n] = Counter()
+
+        for tweet in tweets:
+            tokens = self.str2tokens(tweet)
+
+            for n in self.ngrams_tops.keys():
+                #self.counters[n] = Counter()
+                ngrams_list = self.tokens2ngrams(tokens, n)
+                ngrams_list = list(set(ngrams_list))
+                self.counters[n].update(ngrams_list)
 
         for ngram in [1,2,3]:
             print self.counters[ngram].most_common(10)
@@ -55,12 +67,12 @@ class QueryGenerator:
 
         return q_list
 
-    def analyse_doc(self, doc):
-        tokens = self.str2tokens(doc)
-
-        for n in self.ngrams_tops.keys():
-            self.counters[n] = Counter()
-            self.counters[n].update(self.tokens2ngrams(tokens, n))
+    # def analyse_doc(self, doc):
+    #     tokens = self.str2tokens(doc)
+    #
+    #     for n in self.ngrams_tops.keys():
+    #         self.counters[n] = Counter()
+    #         self.counters[n].update(self.tokens2ngrams(tokens, n))
 
     def get_sorted_counts(self, ngram, tops = None):
         return [tup[1] for tup in self.counters[ngram].most_common(tops)]
