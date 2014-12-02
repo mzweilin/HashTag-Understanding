@@ -29,7 +29,7 @@ def retrieveJSON(hashtag, hundredsOfTweets):
 	return jsonFormatted
 
 
-def retrieveTweetText(hashtag, hundredsOfTweets=2, filterEmoticons = 0):
+def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=0, filterEmoticons=0):
 	global K
 
 	K = hundredsOfTweets
@@ -64,11 +64,15 @@ def retrieveTweetText(hashtag, hundredsOfTweets=2, filterEmoticons = 0):
 		# 		count += 1
 
 		#Remove links
-		status_texts[i] = re.sub(r"(http|https)://\S+", "", status_texts[i])
+		if filterURL == 1:
+			status_texts[i] = re.sub(r"(http|https)://\S+", "", status_texts[i])
 
 		#Remove emoticons
 		if filterEmoticons == 1:
 			status_texts[i] = unicode(re.sub(r"\\u\S+", "", unicodedata.normalize('NFKD', status_texts[i]).encode('ascii','ignore')))
+
+		#Remove usernames
+		#status_texts[i] = unicode(re.sub(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)", "", unicodedata.normalize('NFKD', status_texts[i]).encode('ascii','ignore')))
 
 		#if count < 3:
 		tweetTexts.append((json.dumps(status_texts[i], indent=1))[1:-1])
