@@ -1,6 +1,7 @@
 import twitter
 import json
 import unicodedata
+import re
 
 filterTrends = 0
 jsonResults = []
@@ -64,8 +65,12 @@ def retrieveTweetText(hashtag, *hundredsOfTweets):
 			if (unicodedata.normalize('NFKD', trend).encode('ascii','ignore').translate(None, '#') in otherTags):
 				count += 1
 		#print count
-		if count < 3:
-			tweetTexts.append((json.dumps(status_texts[i], indent=1))[1:-1])
+
+		status_texts[i] = re.sub(r"(http|https)://\S+", "", status_texts[i])
+		#status_texts[i] = re.sub(r"\\u\S+", "", status_texts[i])
+
+		#if count < 3:
+		tweetTexts.append((json.dumps(status_texts[i], indent=1))[1:-1])
 
 	return tweetTexts
 
