@@ -29,12 +29,10 @@ def retrieveJSON(hashtag, hundredsOfTweets):
 	return jsonFormatted
 
 
-def retrieveTweetText(hashtag, *hundredsOfTweets):
+def retrieveTweetText(hashtag, hundredsOfTweets=2, filterEmoticons = 0):
 	global K
-	if len(hundredsOfTweets) == 0:
-		K = 2
-	else:
-		K = hundredsOfTweets[0]
+
+	K = hundredsOfTweets
 	initOauth()
 	global jsonResults
 	jsonResults = collectSearchResults(hashtag)
@@ -59,15 +57,18 @@ def retrieveTweetText(hashtag, *hundredsOfTweets):
 		# 	if ((json.dumps(tags[i], indent=1)[1:-1]).lower() != hashtag.lower()):
 		# 		otherTags.append((json.dumps(tags[i], indent=1)[1:-1]))
 
-		count = 0
-		for trend in currTrends:
-			#print unicodedata.normalize('NFKD', trend).encode('ascii','ignore').translate(None, '#')
-			if (unicodedata.normalize('NFKD', trend).encode('ascii','ignore').translate(None, '#') in otherTags):
-				count += 1
-		#print count
+		# count = 0
+		# for trend in currTrends:
+		# 	#print unicodedata.normalize('NFKD', trend).encode('ascii','ignore').translate(None, '#')
+		# 	if (unicodedata.normalize('NFKD', trend).encode('ascii','ignore').translate(None, '#') in otherTags):
+		# 		count += 1
 
+		#Remove links
 		status_texts[i] = re.sub(r"(http|https)://\S+", "", status_texts[i])
-		#status_texts[i] = re.sub(r"\\u\S+", "", status_texts[i])
+
+		#Remove emoticons
+		if filterEmoticons == 1:
+			status_texts[i] = unicode(re.sub(r"\\u\S+", "", unicodedata.normalize('NFKD', status_texts[i]).encode('ascii','ignore')))
 
 		#if count < 3:
 		tweetTexts.append((json.dumps(status_texts[i], indent=1))[1:-1])
