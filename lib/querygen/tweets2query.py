@@ -27,14 +27,18 @@ class QueryGenerator:
         self.counters = {}
         
     #expected input likes: hashtag="#twitterblades"
-    def gen_query_list(self, hashtag, tweets, stopwords_filter=True, stemming=False):
+    def gen_query_list(self, hashtag, tweets, stopwords_filter=True, stemming=False, segmentation=False):
         self.stemming = stemming
         self.stopwords_filter = stopwords_filter
+        self.segmentation = segmentation
+
         q_list = []
         q_list.append(hashtag)
-        segs = segment(hashtag[1:])
-        if len(segs) > 1:
-            q_list.append(' '.join(segs))
+
+        if self.segmentation:
+            segs = segment(hashtag[1:])
+            if len(segs) > 1:
+                q_list.append(' '.join(segs))
 
         doc_str = ""
         for tweet in tweets:
@@ -73,7 +77,7 @@ class QueryGenerator:
                 token_norm = stemmer.stem(token)
             else:
                 token_norm = token.lower()
-                
+
             if self.stopwords_filter and token_norm in stopwords:
                 continue
             tokens.append(token_norm)
