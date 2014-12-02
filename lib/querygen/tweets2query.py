@@ -23,14 +23,19 @@ class QueryGenerator:
         self.ngrams_tops = ngrams_tops
         self.stemming = False
         self.stopwords_filter = True
+        # only if the count of top 1 bigram/trigram reaches 
+        # the certain fraction of the count of top 1 unigram, 
+        # do we consider it as a search query.
+        self.n_gram_threshold = 0.15 
 
         self.counters = {}
         
     #expected input likes: hashtag="#twitterblades"
-    def gen_query_list(self, hashtag, tweets, stopwords_filter=True, stemming=False, segmentation=False):
+    def gen_query_list(self, hashtag, tweets, stopwords_filter=True, stemming=False, segmentation=False, n_gram_threshold=0.15):
         self.stemming = stemming
         self.stopwords_filter = stopwords_filter
         self.segmentation = segmentation
+        self.n_gram_threshold = n_gram_threshold
 
         q_list = []
         q_list.append(hashtag)
@@ -62,8 +67,15 @@ class QueryGenerator:
         for ngram in [1,2,3]:
             print self.counters[ngram].most_common(10)
 
-        for (n, tops) in self.ngrams_tops.items():
-            q_list.append(' '.join(self.get_sorted_tokens(n, tops)))
+        q_list.append(' '.join(self.get_sorted_tokens(1, 2)))
+
+        unigram_top1_count = self.get_sorted_counts(1, 1)[0]
+
+        for n in [2,3]:
+            ngram_top1_count = self.get_sorted_counts(n, 1)[0]
+
+            if ngram_top1_count > unigram_top1_count * self.n_gram_threshold:
+                q_list.append(' '.join(self.get_sorted_tokens(n, 1)))
 
         return q_list
 
