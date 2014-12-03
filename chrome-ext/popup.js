@@ -17,7 +17,7 @@ var hashtagLookup = {
     query =  'http://127.0.0.1:5000/query/' + encodeURIComponent(hashtag);
     req.open("GET", query, true); //true for a-synchronous
     console.log(req.responseText)
-    req.onload = hashtagLookup.showReferences_;
+    req.onload = hashtagLookup.showResults_;
     req.send(null);
     event.preventDefault(); //Keeps page from re-loading and aborting api call
   },
@@ -29,26 +29,33 @@ var hashtagLookup = {
    * @param {ProgressEvent} e The XHR ProgressEvent.
    * @private
    */
-  showReferences_: function (e) {
-    var references = JSON && JSON.parse(e.target.responseText)
-    var result, results, title, link;
-    var listId = "results", titleId = "title";
+  showResults_: function (e) {
+    var references = JSON && JSON.parse(e.target.responseText)['references']
+    var similarTags = JSON && JSON.parse(e.target.responseText)['similar-tags']
+    var result, results, resultsTitle, link, similarTagsTitle;
+    var listId = "results", resultsTitleId = "results-title", 
+        simTagsId = "sim-tags", simTagsTitleId = "sim-tags-title";
 
     //delete any existing results block
     results = document.getElementById(listId);
     if (results) {
       console.log("Remove existing results");
-      results.parentNode.removeChild(results);
-      title = document.getElementById(titleId);
-      title.parentNode.removeChild(title);
+      results.parentNode.removeChild(results); //references
+      resultsTitle = document.getElementById(resultsTitleId);
+      resultsTitle.parentNode.removeChild(resultsTitle); //references title
+      results = document.getElemenetById(simTagsId);
+      results.parentNode.removeChild(results); //similar HashTags
+      resultsTitle = document.getElementById(simTagsTitleId);
+      resultsTitle.parentNode.removeChild(resultsTitle); //similar HashTags title
     }
 
+    //append reference links
     results = document.createElement("div");
     results.id = listId;
-    title = document.createElement("div");
-    title.id = titleId;
-    title.innerHTML = "Results:";
-    document.body.appendChild(title);
+    resultsTitle = document.createElement("div");
+    resultsTitle.id = resultsTitleId;
+    resultsTitle.innerHTML = "Results:";
+    document.body.appendChild(resultsTitle);
 
     for (var i = 0; i < references.length; i++) {
       result = document.createElement("div");
@@ -58,7 +65,20 @@ var hashtagLookup = {
       result.appendChild(link);
       results.appendChild(result);
     }
+    document.body.appendChild(results);
 
+    //apend similar hashtags title
+    resultsTitle = document.createElement("div");
+    resultsTitle.id = simTagsTitleId;
+    resultsTitle.innerHTML = "Related HashTags:"
+    document.body.appendChild(resultsTitle);
+
+    //append similar hashtags
+    results = document.createElement("div");
+    results.id = simTagsId;
+    for(var i = 0; i < similarTags.length; i++) {
+      results.innerHTML += "#" + similarTags[i] + " "
+    }
     console.log("Appending results");
     document.body.appendChild(results);
   }

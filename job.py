@@ -13,6 +13,15 @@ class Job:
         self.hashtag = hashtag.strip("#" + string.whitespace)
 
     def execute(self):
+        results = {}
+        results['references'] = self.getURLs()
+        results['similar-tags'] = self.getSimilarHashTags()
+        return results
+
+    def getSimilarHashTags(self):
+        return twitter.retrieveRelatedHashtags(self.hashtag)
+
+    def getURLs(self):
         urls = []
         generator = QueryGenerator()
         tweets = twitter.retrieveTweetText(self.hashtag, 5)
