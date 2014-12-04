@@ -27,6 +27,7 @@ class QueryGenerator:
         # the certain fraction of the count of top 1 unigram, 
         # do we consider it as a search query.
         self.n_gram_threshold = 0.15 
+        self.dinstinct_query = True
 
         self.counters = {}
         
@@ -79,7 +80,20 @@ class QueryGenerator:
             if ngram_top1_count > unigram_top1_count * self.n_gram_threshold:
                 q_list.append(' '.join(self.get_sorted_tokens(n, 1)))
 
+        if self.dinstinct_query == True:
+            q_list = self.distinct_query_list(q_list)
         return q_list
+
+    def distinct_query_list(self, query_list):
+        for i in range(len(query_list)):
+            q = query_list[i]
+            q = q.split()
+            q.sort()
+            q = ' '.join(q)
+            query_list[i] = q
+        query_set = set(query_list)
+        ret = list(query_set)
+        return ret
 
     # def analyse_doc(self, doc):
     #     tokens = self.str2tokens(doc)
