@@ -67,7 +67,9 @@ class QueryGenerator:
         for ngram in [1,2,3]:
             print self.counters[ngram].most_common(10)
 
-        q_list.append(' '.join(self.get_sorted_tokens(1, 2)))
+        top2_unigram = self.get_sorted_tokens(1, 2)
+        if len(top2_unigram) > 0:
+            q_list.append(' '.join(top2_unigram))
 
         unigram_top1_count = self.get_sorted_counts(1, 1)[0]
 
@@ -86,7 +88,12 @@ class QueryGenerator:
     #         self.counters[n] = Counter()
     #         self.counters[n].update(self.tokens2ngrams(tokens, n))
 
-    def get_sorted_counts(self, ngram, tops = None):
+    def get_sorted_counts(self, ngram, tops = 1):
+        length = len(self.counters[ngram])
+        if length < 1:
+            return [0]
+        if length < tops:
+            tops = length
         return [tup[1] for tup in self.counters[ngram].most_common(tops)]
     
     def get_sorted_tokens(self, ngram, tops = None):
