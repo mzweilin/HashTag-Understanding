@@ -16,8 +16,9 @@ for t in tweets:
     print "==>", t
 
 qgen = QueryGenerator()
+qgen.set_params(segmt_flag=True, stemming_flag=False, stopwords_flag=True, ngram_threshold=0.15, distinct_query=True, top_k_unigram=2)
 
+query_list = qgen.gen_query_list(hashtag, tweets)
 
-query_list = qgen.gen_query_list(hashtag, tweets, stopwords_filter=True, stemming=False)
-print("Query list for \"%s\" is " % hashtag)
+print("\nQuery list for \"%s\" is " % hashtag)
 print(query_list)

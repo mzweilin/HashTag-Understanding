@@ -12,38 +12,34 @@ def get_stopwords(file_name = './stopwords.txt'):
     return [line.strip()  for line in lines]
 
 stopwords = get_stopwords('./english.stop')
-extra_stopwords = ["'s", "''", "...", "--"]
+extra_stopwords = ["'s", "''", "...", "--", "n't"]
 for word in extra_stopwords:
     stopwords.append(word)
 
 class QueryGenerator:
-    def __init__(self, ngrams_tops = {1:2, 2: 1, 3:1}):
-        #self.freq_n_grams = freq_n_grams
-        #self.top_k_terms = top_k_terms
-        self.ngrams_tops = ngrams_tops
-        self.stemming = False
-        self.stopwords_filter = True
-        
+    def __init__(self, segmt_flag=True, stemming_flag=False, stopwords_flag=True, ngram_threshold=0.15, distinct_query=True, top_k_unigram=2):
+        self.set_params(stemming_flag, stopwords_flag, ngram_threshold, distinct_query, top_k_unigram)
+        self.ngrams_tops = {1:2, 2: 1, 3:1}
+        self.counters = {}
+
+    def set_params(self, segmt_flag=True, stemming_flag=False, stopwords_flag=True, ngram_threshold=0.15, distinct_query=True, top_k_unigram=2):
+        self.segmentation = segmt_flag
+        self.stemming = stemming_flag
+        self.stopwords_filter = stopwords_flag
+
         # only if the count of top 1 bigram/trigram reaches 
         # the certain fraction of the count of top 1 unigram, 
         # do we consider it as a search query.
-        self.n_gram_threshold = 0.15
+        self.n_gram_threshold = ngram_threshold
 
         # Sometimes the combined unigrams may be the same combination as those in bigram/trigram.
-        self.dinstinct_query = True
+        self.dinstinct_query = distinct_query
 
         # combine top k unigram to form a query.
-        self.top_k_unigram = 2
-
-        self.counters = {}
+        self.top_k_unigram = top_k_unigram
         
     #expected input likes: hashtag="#twitterblades"
-    def gen_query_list(self, hashtag, tweets, stopwords_filter=True, stemming=False, segmentation=False, n_gram_threshold=0.15):
-        self.stemming = stemming
-        self.stopwords_filter = stopwords_filter
-        self.segmentation = segmentation
-        self.n_gram_threshold = n_gram_threshold
-
+    def gen_query_list(self, hashtag, tweets):
         q_list = []
         q_list.append(hashtag)
 
