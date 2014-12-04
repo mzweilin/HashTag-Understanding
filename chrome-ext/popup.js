@@ -30,11 +30,13 @@ var hashtagLookup = {
    * @private
    */
   showResults_: function (e) {
-    var references = JSON && JSON.parse(e.target.responseText)['references']
-    var similarTags = JSON && JSON.parse(e.target.responseText)['similar-tags']
+    var references = JSON && JSON.parse(e.target.responseText)['references'];
+    var similarTags = JSON && JSON.parse(e.target.responseText)['similar-tags'];
+    var tagdefSummary = JSON && JSON.parse(e.target.responseText)['tagdef-summary'];
     var result, results, resultsTitle, link, similarTagsTitle;
     var listId = "results", resultsTitleId = "results-title", 
-        simTagsId = "sim-tags", simTagsTitleId = "sim-tags-title";
+        simTagsId = "sim-tags", simTagsTitleId = "sim-tags-title",
+        tagdefId = "tagdef";
 
     //delete any existing results block
     results = document.getElementById(listId);
@@ -47,27 +49,19 @@ var hashtagLookup = {
       results.parentNode.removeChild(results); //similar HashTags
       resultsTitle = document.getElementById(simTagsTitleId);
       resultsTitle.parentNode.removeChild(resultsTitle); //similar HashTags title
+      resultsTitle = document.getElementById(tagdefId);
+      resultsTitle.parentNode.removeChild(resultsTitle); //tagdef summary
     }
 
-    //append reference links
-    results = document.createElement("div");
-    results.id = listId;
-    resultsTitle = document.createElement("div");
-    resultsTitle.id = resultsTitleId;
-    resultsTitle.innerHTML = "Results:";
-    document.body.appendChild(resultsTitle);
+    console.log("Appending results");
 
-    for (var i = 0; i < references.length; i++) {
-      result = document.createElement("div");
-      link = document.createElement('a');
-      link.href = references[i];
-      link.innerHTML = "- " + references[i];
-      result.appendChild(link);
-      results.appendChild(result);
-    }
-    document.body.appendChild(results);
+    //append tagdef summary
+    result = document.createElement("div");
+    result.id = tagdefId;
+    result.innerHTML = "TagDef.com summary: " + tagdefSummary;
+    document.body.appendChild(result);
 
-    //apend similar hashtags title
+    //append similar hashtags title
     resultsTitle = document.createElement("div");
     resultsTitle.id = simTagsTitleId;
     resultsTitle.innerHTML = "Related HashTags:"
@@ -79,7 +73,24 @@ var hashtagLookup = {
     for(var i = 0; i < similarTags.length; i++) {
       results.innerHTML += "#" + similarTags[i] + " "
     }
-    console.log("Appending results");
+    document.body.appendChild(results);
+
+    //append reference links
+    results = document.createElement("div");
+    results.id = listId;
+    resultsTitle = document.createElement("div");
+    resultsTitle.id = resultsTitleId;
+    resultsTitle.innerHTML = "References:";
+    document.body.appendChild(resultsTitle);
+
+    for (var i = 0; i < references.length; i++) {
+      result = document.createElement("div");
+      link = document.createElement('a');
+      link.href = references[i];
+      link.innerHTML = "- " + references[i];
+      result.appendChild(link);
+      results.appendChild(result);
+    }
     document.body.appendChild(results);
   }
 };
