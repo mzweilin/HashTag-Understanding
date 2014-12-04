@@ -23,11 +23,17 @@ class QueryGenerator:
         self.ngrams_tops = ngrams_tops
         self.stemming = False
         self.stopwords_filter = True
+        
         # only if the count of top 1 bigram/trigram reaches 
         # the certain fraction of the count of top 1 unigram, 
         # do we consider it as a search query.
-        self.n_gram_threshold = 0.15 
+        self.n_gram_threshold = 0.15
+
+        # Sometimes the combined unigrams may be the same combination as those in bigram/trigram.
         self.dinstinct_query = True
+
+        # combine top k unigram to form a query.
+        self.top_k_unigram = 2
 
         self.counters = {}
         
@@ -68,9 +74,9 @@ class QueryGenerator:
         for ngram in [1,2,3]:
             print self.counters[ngram].most_common(10)
 
-        top2_unigram = self.get_sorted_tokens(1, 2)
-        if len(top2_unigram) > 0:
-            q_list.append(' '.join(top2_unigram))
+        tops_unigram = self.get_sorted_tokens(1, self.top_k_unigram)
+        if len(tops_unigram) > 0:
+            q_list.append(' '.join(tops_unigram))
 
         unigram_top1_count = self.get_sorted_counts(1, 1)[0]
 
