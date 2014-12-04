@@ -76,34 +76,19 @@ def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=0, filterEmoticons=
 	return tweetTexts
 
 
-def getJSON(hashtag, hundredsOfTweets):
-	global K
-	K = hundredsOfTweets
-	initOauth()
-	global jsonResults
-	jsonResults = collectSearchResults(hashtag)
-
-	jsonFormatted = []
-	for i in range(0,len(jsonResults)):
-		jsonFormatted.append(str(json.dumps(jsonResults[i], indent=1)))
-
-	return jsonFormatted
-
-# returns all other hashtags in the tweets with the original hashtag
+# returns a list of related hashtags
 def retrieveRelatedHashtags(origHashtag, hundredsOfTweets=2):
 	global K
 	retrieveTweetText(origHashtag, hundredsOfTweets, 1, 1)
 	K = hundredsOfTweets
-	tags = [ hTag['text'] 
-					for json_i in jsonResults
-						for hTag in json_i['entities']['hashtags'] ]
+	tags = [ unicodedata.normalize('NFKD', hTag['text']).encode('ascii','ignore') for json_i in jsonResults for hTag in json_i['entities']['hashtags'] ]
 
 
 	hashtagsDict = {}
 	origHashtagNoPound = origHashtag.replace("#","")
 	for i in range(0,len(tags)):
-		if ((json.dumps(tags[i], indent=1)[1:-1]).lower() != origHashtagNoPound.lower()):
-			key = (json.dumps(tags[i], indent=1)[1:-1])
+		if (tags[i].lower() != origHashtagNoPound.lower()):
+			key = (tags[i])
 			if key in hashtagsDict:
 				hashtagsDict[key] += 1
 			else:
@@ -116,6 +101,19 @@ def retrieveRelatedHashtags(origHashtag, hundredsOfTweets=2):
 		hashtags.append(hashtagsDict[i][0])
 
 	return hashtags
+
+def getJSON(hashtag, hundredsOfTweets):
+	global K
+	K = hundredsOfTweets
+	initOauth()
+	global jsonResults
+	jsonResults = collectSearchResults(hashtag)
+
+	jsonFormatted = []
+	for i in range(0,len(jsonResults)):
+		jsonFormatted.append(str(json.dumps(jsonResults[i], indent=1)))
+
+	return jsonFormatted
 
 
 ######################################################################
