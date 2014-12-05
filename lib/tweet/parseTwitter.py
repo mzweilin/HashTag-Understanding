@@ -97,8 +97,11 @@ def retrieveRelatedHashtags(origHashtag, hundredsOfTweets=2):
 	hashtagsDict = sorted(hashtagsDict.items(), key=operator.itemgetter(1), reverse=True)	
 
 	hashtags = []
-	for i in range(0,4):
-		hashtags.append(hashtagsDict[i][0])
+	for i in range(0,5):
+		try:
+			hashtags.append(hashtagsDict[i][0])
+		except IndexError:
+			pass
 
 	return hashtags
 
