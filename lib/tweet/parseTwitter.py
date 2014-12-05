@@ -4,7 +4,7 @@ import unicodedata
 import re
 import operator
 
-filterTrends = 0
+filterTrends = 1
 jsonResults = []
 twitter_api = ''
 K = 2
@@ -19,7 +19,7 @@ K = 2
 
 
 
-def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=0, filterEmoticons=0, caseSensitive = 0):
+def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=1, filterEmoticons=1, caseSensitive = 0):
 	global K
 
 	K = hundredsOfTweets
@@ -28,8 +28,9 @@ def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=0, filterEmoticons=
 	jsonResults = collectSearchResults(hashtag)
 	status_texts = [ result['text'] for result in jsonResults ]
 
+	#Find current trending hashtags
 	if (filterTrends == 1):
-		currTrends = getTrends()
+		currTrends = getTrendingHashtags()
 		try:
 			currTrends.remove(hashtag)
 		except ValueError:
@@ -37,21 +38,21 @@ def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=0, filterEmoticons=
 	else:
 		currTrends = []
 
+	#print currTrends
+
 
 	tweetTexts = []
 	for i in range(0,len(status_texts)):
-		# json_i = jsonResults[i]
-		# tags = [ hTag['text'] for hTag in json_i['entities']['hashtags'] ]
-		# otherTags = []
-		# for i in range(0,len(tags)):
-		# 	if ((json.dumps(tags[i], indent=1)[1:-1]).lower() != hashtag.lower()):
-		# 		otherTags.append((json.dumps(tags[i], indent=1)[1:-1]))
+		json_i = jsonResults[i]
+		tags = [ unicodedata.normalize('NFKD', hTag['text']).encode('ascii','ignore').translate(None, '#') for hTag in json_i['entities']['hashtags'] ]
+		otherTags = [x for x in tags if x.lower() != hashtag.replace("#","").lower()]
 
-		# count = 0
-		# for trend in currTrends:
-		# 	#print unicodedata.normalize('NFKD', trend).encode('ascii','ignore').translate(None, '#')
-		# 	if (unicodedata.normalize('NFKD', trend).encode('ascii','ignore').translate(None, '#') in otherTags):
-		# 		count += 1
+		#Count number of trending hashtags
+		count = 0
+		for trend in currTrends:
+			#print unicodedata.normalize('NFKD', trend).encode('ascii','ignore').translate(None, '#')
+			if (unicodedata.normalize('NFKD', trend).encode('ascii','ignore').translate(None, '#').replace("#","") in otherTags):
+				count += 1
 
 		#Remove links
 		if filterURL == 1:
@@ -64,14 +65,13 @@ def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=0, filterEmoticons=
 		#Remove usernames
 		#status_texts[i] = unicode(re.sub(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)", "", unicodedata.normalize('NFKD', status_texts[i]).encode('ascii','ignore')))
 
-		#if count < 3:
-
-		TEXT = (json.dumps(status_texts[i], indent=1))[1:-1]
-		if caseSensitive == 1:
-			if hashtag in TEXT:
+		if count < 2:
+			TEXT = (json.dumps(status_texts[i], indent=1))[1:-1]
+			if caseSensitive == 1:
+				if hashtag in TEXT:
+					tweetTexts.append(TEXT)
+			else:
 				tweetTexts.append(TEXT)
-		else:
-			tweetTexts.append(TEXT)
 
 	return tweetTexts
 
@@ -137,23 +137,28 @@ def initOauth():
     twitter_api = twitter.Twitter(auth=auth)
 
 #################### Retrieving trends #####################
-def getTrends():
+def getTrendingHashtags():
     # The Yahoo! Where On Earth ID for the entire world is 1.
     # See https://dev.twitter.com/docs/api/1.1/get/trends/place and
     # http://developer.yahoo.com/geo/geoplanet/
 
-    WORLD_WOE_ID = 1
-    US_WOE_ID = 23424977
+	WORLD_WOE_ID = 1
+	US_WOE_ID = 23424977
 
     # Prefix ID with the underscore for query string parameterization.
     # Without the underscore, the twitter package appends the ID value
     # to the URL itself as a special case keyword argument.
 
-    world_trends = twitter_api.trends.place(_id=WORLD_WOE_ID)
-    us_trends = twitter_api.trends.place(_id=US_WOE_ID)
+	world_trends = twitter_api.trends.place(_id=WORLD_WOE_ID)
+	us_trends = twitter_api.trends.place(_id=US_WOE_ID)
 
-    print(json.dumps(world_trends, indent=1))
-    print(json.dumps(us_trends, indent=1))
+	trendingHashtags = []
+	for trend in world_trends[0]['trends']:
+		if "#" in trend['name']:
+			trendingHashtags.append(trend['name'])
+
+    #print type(json.dumps(world_trends, indent=1))
+	return trendingHashtags
 
 
 ################ Collecting search results #################
@@ -224,10 +229,10 @@ def getData(jsonResults):
 
 	# Explore the first 5 items for each...
 
-	print(json.dumps(status_texts[0:5], indent=1))
-	print(json.dumps(screen_names[0:5], indent=1))
-	print(json.dumps(hashtags[0:5], indent=1))
-	print(json.dumps(words[0:5], indent=1))
+	# print(json.dumps(status_texts[0:5], indent=1))
+	# print(json.dumps(screen_names[0:5], indent=1))
+	# print(json.dumps(hashtags[0:5], indent=1))
+	# print(json.dumps(words[0:5], indent=1))
 
 
 	return status_texts
