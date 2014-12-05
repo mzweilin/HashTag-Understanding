@@ -86,13 +86,31 @@ var hashtagLookup = {
     resultsTitle.innerHTML = "<br>References:";
     document.body.appendChild(resultsTitle);
 
-    for (var i = 0; i < references.length; i++) {
+    for (var source in references) {
       result = document.createElement("div");
-      link = document.createElement('a');
-      link.href = references[i];
-      link.innerHTML = "- " + references[i];
-      result.appendChild(link);
-      results.appendChild(result);
+      result.innerHTML = "<br>"
+      switch(source) {
+        case 'web':
+          result.innerHTML = "From the web: ";
+          break;
+        case 'news':
+          result.innerHTML = "From the news: ";
+          break;
+        case 'wiki':
+          result.innerHTML = "From Wikipedia: ";
+          break;
+        default:
+          console.log("From who knows where!");
+      }
+      results.appendChild(result)
+      for (var i = 0; i < references[source].length; i++) {
+        result = document.createElement("div");
+        link = document.createElement('a');
+        link.href = references[source];
+        link.innerHTML = "- " + references[source][i];
+        result.appendChild(link);
+        results.appendChild(result);
+      }
     }
     document.body.appendChild(results);
 

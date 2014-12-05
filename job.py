@@ -23,14 +23,15 @@ class Job:
         results['references'] = self.getURLs()
         results['similar-tags'] = self.getSimilarHashTags()
         results['tagdef-summary'] = self.getTagDefSummary()
-        results['summary'] = self.getSummary(results['references'])
+        urls = results['references']['wiki'] + results['references']['web'] + results['references']['news']
+        results['summary'] = self.getSummary(urls)
         return results
 
     def getSimilarHashTags(self):
         return twitter.retrieveRelatedHashtags('#' + self.hashtag)
 
     def getSummary(self, urls):
-        num_sentences = 3
+        num_sentences = 10
         return extractor.summarize(urls, num_sentences)
 
     def getTagDefSummary(self):
