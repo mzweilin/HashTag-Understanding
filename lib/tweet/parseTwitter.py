@@ -80,7 +80,7 @@ def retrieveTweetText(hashtag, hundredsOfTweets=2, filterTrends=False, caseSensi
 # returns a list of related hashtags
 def retrieveRelatedHashtags(hashtag, hundredsOfTweets=2, filterTrends=True):
 	global K
-	initOauth3()
+	initOauth2()
 	global jsonResults
 	jsonResults = collectSearchResults(hashtag)
 	status_texts = [ result['text'] for result in jsonResults ]
@@ -102,7 +102,7 @@ def retrieveRelatedHashtags(hashtag, hundredsOfTweets=2, filterTrends=True):
 	hashtagsDict = {}
 	hashtagNoPound = hashtag.replace("#","")
 
-	stoptags = ['viral', 'trendingcontentnow', 'now', 'trending']
+	stoptags = ['viral', 'trendingcontentnow', 'now', 'trending', 'news']
 	for i in range(0,len(tags)):
 		if (tags[i].lower() != hashtagNoPound.lower()):
 			key = (tags[i])
