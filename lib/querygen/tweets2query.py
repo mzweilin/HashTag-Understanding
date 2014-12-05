@@ -2,6 +2,7 @@ import string, nltk
 from collections import Counter
 from nltk.stem.snowball import EnglishStemmer
 from wordsegment import segment
+from lib.tweet import parseTwitter
 
 stemmer = EnglishStemmer()
 tokenizer = nltk.tokenize.treebank.TreebankWordTokenizer()
@@ -43,10 +44,19 @@ class QueryGenerator:
         q_list = []
         q_list.append(hashtag)
 
+        
         if self.segmentation:
             segs = segment(hashtag[1:])
             if len(segs) > 1:
                 q_list.append(' '.join(segs))
+
+        # relatedHashtags = parseTwitter.retrieveRelatedHashtags(hashtag)
+        # if self.segmentation:
+        #     for tag in relatedHashtags:
+        #         segs = segment(tag[1:])
+        #         if len(segs) > 1:
+        #             q_list.append(' '.join(segs))
+
 
         # doc_str = ""
         # for tweet in tweets:
