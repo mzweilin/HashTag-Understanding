@@ -2,6 +2,7 @@ import lib.search.bing_search as bing
 import lib.tweet.parseTwitter as twitter
 from lib.querygen.tweets2query import QueryGenerator 
 import lib.summarization.tagdef as tagdef
+from lib.summarization import extractor
 import string
 
 import logging
@@ -20,12 +21,18 @@ class Job:
     def execute(self):
         results = {}
         results['references'] = self.getURLs()
-        #results['similar-tags'] = self.getSimilarHashTags()
-        #results['tagdef-summary'] = self.getTagDefSummary()
+        results['similar-tags'] = self.getSimilarHashTags()
+        results['tagdef-summary'] = self.getTagDefSummary()
+        urls = results['references']['wiki'] + results['references']['web'] + results['references']['news']
+        results['summary'] = self.getSummary(urls)
         return results
 
     def getSimilarHashTags(self):
         return twitter.retrieveRelatedHashtags('#' + self.hashtag)
+
+    def getSummary(self, urls):
+        num_sentences = 10
+        return extractor.summarize(urls, num_sentences)
 
     def getTagDefSummary(self):
         return tagdef.lookup(self.hashtag)

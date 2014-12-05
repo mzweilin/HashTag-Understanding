@@ -78,29 +78,53 @@ def retrieveTweetText(hashtag, hundredsOfTweets=2, filterTrends=False, caseSensi
 
 
 # returns a list of related hashtags
-def retrieveRelatedHashtags(origHashtag, hundredsOfTweets=2):
+def retrieveRelatedHashtags(hashtag, hundredsOfTweets=2, filterTrends=True):
 	global K
-	retrieveTweetText(origHashtag, hundredsOfTweets, 1, 1)
+	initOauth3()
+	global jsonResults
+	jsonResults = collectSearchResults(hashtag)
+	status_texts = [ result['text'] for result in jsonResults ]
 	K = hundredsOfTweets
 	tags = [ unicodedata.normalize('NFKD', hTag['text']).encode('ascii','ignore') for json_i in jsonResults for hTag in json_i['entities']['hashtags'] ]
 
+	#Find current trending hashtags
+	if (filterTrends == True):
+		currTrends = getTrendingHashtags()
+		try:
+			currTrends.remove(hashtag)
+		except ValueError:
+			pass
 
+	else:
+		currTrends = []
+
+	print tags
 	hashtagsDict = {}
-	origHashtagNoPound = origHashtag.replace("#","")
+	hashtagNoPound = hashtag.replace("#","")
+
+	stoptags = ['viral', 'trendingcontentnow', 'now', 'trending']
 	for i in range(0,len(tags)):
-		if (tags[i].lower() != origHashtagNoPound.lower()):
+		if (tags[i].lower() != hashtagNoPound.lower()):
 			key = (tags[i])
 			if key in hashtagsDict:
 				hashtagsDict[key] += 1
 			else:
-				hashtagsDict[key] = 1
+				if (not any(key in s for s in stoptags)):
+					hashtagsDict[key] = 1
 
+		
 	hashtagsDict = sorted(hashtagsDict.items(), key=operator.itemgetter(1), reverse=True)	
+
 
 	hashtags = []
 	for i in range(0,5):
 		try:
-			hashtags.append(hashtagsDict[i][0])
+			add = True
+			for trend in currTrends:
+				if hashtagsDict[i][0] == trend.replace("#",""):
+					add = False
+			if add == True:
+				hashtags.append(hashtagsDict[i][0])
 		except IndexError:
 			pass
 
@@ -148,6 +172,19 @@ def initOauth2():
     global twitter_api
     twitter_api = twitter.Twitter(auth=auth)
 
+def initOauth3():
+    CONSUMER_KEY = 'gnu6shRgmWWJujZo0CTIunCij'
+    CONSUMER_SECRET ='AvtUORKpdwEfINtXdT0nCGZGWsZNQYf1oYBEl9zlv9mzbrwfqR'
+    OAUTH_TOKEN = '2600337966-yLgN6hjuWGAF7sA3D0FoGJNwGoQbflc6yGfdL10'
+    OAUTH_TOKEN_SECRET = 'Bm8OZVZPTVrrcL01dPuLkVBoBdIb50iwTAZhGg7qifx8Q'
+
+    auth = twitter.oauth.OAuth(OAUTH_TOKEN, OAUTH_TOKEN_SECRET, CONSUMER_KEY, CONSUMER_SECRET)
+
+    global twitter_api
+    twitter_api = twitter.Twitter(auth=auth)
+
+    
+
 #################### Retrieving trends #####################
 def getTrendingHashtags():
     # The Yahoo! Where On Earth ID for the entire world is 1.
@@ -165,7 +202,7 @@ def getTrendingHashtags():
 	us_trends = twitter_api.trends.place(_id=US_WOE_ID)
 
 	trendingHashtags = []
-	for trend in world_trends[0]['trends']:
+	for trend in us_trends[0]['trends']:
 		if "#" in trend['name']:
 			trendingHashtags.append(trend['name'])
 
