@@ -4,7 +4,6 @@ import unicodedata
 import re
 import operator
 
-filterTrends = 1
 jsonResults = []
 twitter_api = ''
 K = 2
@@ -19,7 +18,9 @@ K = 2
 
 
 
-def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=1, filterEmoticons=1, caseSensitive = 0):
+def retrieveTweetText(hashtag, hundredsOfTweets=2, filterTrends=False, caseSensitive = False, filterURL=True, filterEmoticons=True):
+	
+	
 	global K
 
 	K = hundredsOfTweets
@@ -29,7 +30,7 @@ def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=1, filterEmoticons=
 	status_texts = [ result['text'] for result in jsonResults ]
 
 	#Find current trending hashtags
-	if (filterTrends == 1):
+	if (filterTrends == True):
 		currTrends = getTrendingHashtags()
 		try:
 			currTrends.remove(hashtag)
@@ -55,11 +56,11 @@ def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=1, filterEmoticons=
 				count += 1
 
 		#Remove links
-		if filterURL == 1:
+		if filterURL == True:
 			status_texts[i] = re.sub(r"(http|https)://\S+", "", status_texts[i])
 
 		#Remove emoticons
-		if filterEmoticons == 1:
+		if filterEmoticons == True:
 			status_texts[i] = unicode(re.sub(r"\\u\S+", "", unicodedata.normalize('NFKD', status_texts[i]).encode('ascii','ignore')))
 
 		#Remove usernames
@@ -67,7 +68,7 @@ def retrieveTweetText(hashtag, hundredsOfTweets=2, filterURL=1, filterEmoticons=
 
 		if count < 2:
 			TEXT = (json.dumps(status_texts[i], indent=1))[1:-1]
-			if caseSensitive == 1:
+			if caseSensitive == True:
 				if hashtag in TEXT:
 					tweetTexts.append(TEXT)
 			else:
@@ -130,6 +131,17 @@ def initOauth():
     CONSUMER_SECRET ='bHo0rpEE4QdFB881I84fs5SiUGY5iTjhGTHz5mjOYmT48cmIHX'
     OAUTH_TOKEN = '2600337966-UyPLjWM0h4HXzJkMvZjakCYtyRdaTi6mMZn6sBd'
     OAUTH_TOKEN_SECRET = 'vfocB9vdoLCF6xRXgultKxtIbGAUnUO3N9x80EYKsk6lC'
+
+    auth = twitter.oauth.OAuth(OAUTH_TOKEN, OAUTH_TOKEN_SECRET, CONSUMER_KEY, CONSUMER_SECRET)
+
+    global twitter_api
+    twitter_api = twitter.Twitter(auth=auth)
+
+def initOauth2():
+    CONSUMER_KEY = 'QgDCQP2o0CG9tWEsRhZRtJLVC'
+    CONSUMER_SECRET ='6QkU5doMb7cWScAiIA7ctAG9tnFUbwBphEB6TtKRVP64UzOGbM'
+    OAUTH_TOKEN = '2600337966-AuLnwDSIx3k5FwRskDrOr8CfDkuVZVseN2cMt4e'
+    OAUTH_TOKEN_SECRET = 'r33d6YKClInk7yeMsLcllWvSMpK0OhSSQbqO4DTEGlBVY'
 
     auth = twitter.oauth.OAuth(OAUTH_TOKEN, OAUTH_TOKEN_SECRET, CONSUMER_KEY, CONSUMER_SECRET)
 
