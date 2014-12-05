@@ -10,7 +10,10 @@ logging.basicConfig(level=logging.INFO)
 logger = logging
 
 def main():
-    job  = Job(" #lab14")
+    import sys
+    if len(sys.argv) >= 2:
+        hashtag = '#'+sys.argv[1]
+    job  = Job(hashtag)
     urls = job.execute()
     print(urls)
 
