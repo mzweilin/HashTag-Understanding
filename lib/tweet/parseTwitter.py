@@ -94,24 +94,30 @@ def retrieveRelatedHashtags(hashtag, hundredsOfTweets=2, filterTrends=True):
 			currTrends.remove(hashtag)
 		except ValueError:
 			pass
+
 	else:
 		currTrends = []
 
-
+	print tags
 	hashtagsDict = {}
 	hashtagNoPound = hashtag.replace("#","")
+
+	stoptags = ['viral', 'trendingcontentnow', 'now', 'trending']
 	for i in range(0,len(tags)):
 		if (tags[i].lower() != hashtagNoPound.lower()):
 			key = (tags[i])
 			if key in hashtagsDict:
 				hashtagsDict[key] += 1
 			else:
-				hashtagsDict[key] = 1
+				if (not any(key in s for s in stoptags)):
+					hashtagsDict[key] = 1
 
+		
 	hashtagsDict = sorted(hashtagsDict.items(), key=operator.itemgetter(1), reverse=True)	
 
+
 	hashtags = []
-	for i in range(0,10):
+	for i in range(0,5):
 		try:
 			add = True
 			for trend in currTrends:
