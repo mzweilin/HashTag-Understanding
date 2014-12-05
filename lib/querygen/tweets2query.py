@@ -82,6 +82,7 @@ class QueryGenerator:
 
         tops_unigram = self.get_sorted_tokens(1, self.top_k_unigram)
         if len(tops_unigram) > 0:
+            q_list.append(tops_unigram[self.top_k_unigram-1])
             q_list.append(' '.join(tops_unigram))
 
         unigram_top1_count = self.get_sorted_counts(1, 1)[0]
