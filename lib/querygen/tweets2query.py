@@ -77,8 +77,8 @@ class QueryGenerator:
                 ngrams_list = list(set(ngrams_list))
                 self.counters[n].update(ngrams_list)
 
-        for ngram in [1,2,3]:
-            print self.counters[ngram].most_common(10)
+        #for ngram in [1,2,3]:
+        #    print self.counters[ngram].most_common(10)
 
         tops_unigram = self.get_sorted_tokens(1, self.top_k_unigram)
         if len(tops_unigram) > 0:
