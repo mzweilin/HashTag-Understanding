@@ -25,6 +25,10 @@ def group_search(query_list, num_results, category='Web', on_wiki=True, exclude_
         if on_wiki == True:
             query += " site:wikipedia.org"
         urls = search(query, num_results, category)
+        if on_wiki == True:
+            stop_url = 'http://www.wikipedia.org/'
+            if stop_url in urls:
+                urls.remove(stop_url)
         for i in range(len(urls)):
             url = urls[i]
             url_counter[url] += float(1)/3**float(i)
