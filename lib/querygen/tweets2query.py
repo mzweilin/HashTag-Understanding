@@ -13,17 +13,17 @@ def get_stopwords(file_name = './stopwords.txt'):
     return [line.strip()  for line in lines]
 
 stopwords = get_stopwords('./english.stop')
-extra_stopwords = ["'s", "''", "...", "--", "n't"]
+extra_stopwords = ["'s", "''", "...", "--", "n't", "\\n"]
 for word in extra_stopwords:
     stopwords.append(word)
 
 class QueryGenerator:
-    def __init__(self, segmt_flag=True, stemming_flag=False, stopwords_flag=True, ngram_threshold=0.15, distinct_query=True, top_k_unigram=2):
-        self.set_params(stemming_flag, stopwords_flag, ngram_threshold, distinct_query, top_k_unigram)
+    def __init__(self, segmt_flag=False, stemming_flag=False, stopwords_flag=True, ngram_threshold=0.15, distinct_query=False, top_k_unigram=2):
+        self.set_params(segmt_flag, stemming_flag, stopwords_flag, ngram_threshold, distinct_query, top_k_unigram)
         self.ngrams_tops = {1:2, 2: 1, 3:1}
         self.counters = {}
 
-    def set_params(self, segmt_flag=True, stemming_flag=False, stopwords_flag=True, ngram_threshold=0.15, distinct_query=True, top_k_unigram=2):
+    def set_params(self, segmt_flag=False, stemming_flag=False, stopwords_flag=True, ngram_threshold=0.15, distinct_query=False, top_k_unigram=2):
         self.segmentation = segmt_flag
         self.stemming = stemming_flag
         self.stopwords_filter = stopwords_flag
@@ -82,8 +82,13 @@ class QueryGenerator:
 
         tops_unigram = self.get_sorted_tokens(1, self.top_k_unigram)
         if len(tops_unigram) > 0:
-            q_list.append(tops_unigram[self.top_k_unigram-1])
-            q_list.append(' '.join(tops_unigram))
+            for i in range(2, len(tops_unigram)+1):
+                subset = tops_unigram[:i]
+                if len(subset) > 0:
+                    q_list.append(' '.join(subset))
+            #q_list.append(' '.join(tops_unigram))
+            # without the hashtag itself.
+            q_list.append(' '.join(tops_unigram[1:]))
 
         unigram_top1_count = self.get_sorted_counts(1, 1)[0]
 
