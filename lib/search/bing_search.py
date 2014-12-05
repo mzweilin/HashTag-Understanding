@@ -1,3 +1,4 @@
+import logging
 from collections import Counter
 from bing_search_api import BingSearchAPI
 my_key = "MEL5FOrb1H5G1E78YY8N5mkfcvUK2hNBYsZl1aAEEbE"
@@ -17,22 +18,26 @@ def search(query_string, num_results, category='Web'):
 
     return [result['Url'] for result in results['d']['results'][0][category]]
 
-def group_search(query_list, num_results, category='Web', on_wiki=True, exclude_twitter=True):
+def group_search(query_list, num_results, category='Web', on_wiki=False, on_ubd=False, exclude_twitter=True, weight_step=3):
     url_counter = Counter()
-    for query in query_list:
-        if exclude_twitter == True:
+    for j in range(len(query_list)):
+        query = query_list[j]
+        if exclude_twitter == True and on_wiki == False and on_ubd == False:
             query += " -site:twitter.com"
         if on_wiki == True:
-            query += " site:wikipedia.org"
-        urls = search(query, num_results, category)
-        if on_wiki == True:
-            stop_url = 'http://www.wikipedia.org/'
-            if stop_url in urls:
-                urls.remove(stop_url)
+            query += " site:en.wikipedia.org"
+        if on_ubd == True:
+            query += " site:www.urbandictionary.com"
+        urls = search(query, num_results+5, category)
+        if on_wiki == True or on_ubd == True:
+            stop_urls = ['http://www.wikipedia.org/', 'http://en.wikipedia.org/wiki/Main_Page', 'http://www.urbandictionary.com/', 'http://www.urbandictionary.com/random.php']
+            for stop_url in stop_urls:
+                if stop_url in urls:
+                    urls.remove(stop_url)
         for i in range(len(urls)):
             url = urls[i]
-            url_counter[url] += float(1)/3**float(i)
-
+            url_counter[url] += float(1)/weight_step**float(i) /(0.1*j+1)
+    logging.info(url_counter.most_common(num_results+1))
     return [tup[0] for tup in url_counter.most_common(num_results)]
 
 if __name__ == "__main__":
