@@ -4,8 +4,12 @@ from lib.querygen.tweets2query import QueryGenerator
 import lib.summarization.tagdef as tagdef
 import string
 
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging
+
 def main():
-    job  = Job(" #pangu")
+    job  = Job(" #lab14")
     urls = job.execute()
     print(urls)
 
@@ -16,8 +20,8 @@ class Job:
     def execute(self):
         results = {}
         results['references'] = self.getURLs()
-        results['similar-tags'] = self.getSimilarHashTags()
-        results['tagdef-summary'] = self.getTagDefSummary()
+        #results['similar-tags'] = self.getSimilarHashTags()
+        #results['tagdef-summary'] = self.getTagDefSummary()
         return results
 
     def getSimilarHashTags(self):
@@ -30,6 +34,10 @@ class Job:
         generator = QueryGenerator()
         tweets = twitter.retrieveTweetText('#'+self.hashtag, 5)
         queries = generator.gen_query_list('#'+self.hashtag, tweets)
+
+        logger.info(generator.preview_counters())
+        logger.info(queries)
+
         urls_wiki = bing.group_search(queries, 2, on_wiki=True)
         urls_news = bing.group_search(queries, 2, category='News', on_wiki=False)
         urls_web = bing.group_search(queries, 2, on_wiki=False)
