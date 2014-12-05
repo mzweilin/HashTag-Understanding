@@ -97,6 +97,12 @@ class QueryGenerator:
             q_list = self.distinct_query_list(q_list)
         return q_list
 
+    def preview_counters(self):
+        ret = ''
+        for ngram in [1,2,3]:
+            ret += "%s\n" % str(self.counters[ngram].most_common(10))
+        return ret
+
     def distinct_query_list(self, query_list):
         for i in range(len(query_list)):
             q = query_list[i]
