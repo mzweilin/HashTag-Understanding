@@ -14,6 +14,7 @@ def evaluate():
 		job  = Job(matrix[i][1])
 		urls = job.execute()
 
+		
 		url1Retrieved  = 0
 		url2Retrieved = 0
 		url3Retrieved = 0
@@ -31,7 +32,12 @@ def evaluate():
 		else:
 			length = 3
 
-		retrieved.append(float(url1Retrieved+url2Retrieved+url3Retrieved)/length)
+		recall = float(url1Retrieved+url2Retrieved+url3Retrieved)/length
+		# if url1Retrieved+url2Retrieved+url3Retrieved > 0:
+		# 	recall = 1
+		# else:
+		# 	recall = 0
+		retrieved.append(recall)
 
 
 	print retrieved
