@@ -24,11 +24,11 @@ def group_search(query_list, num_results, category='Web', on_wiki=True, exclude_
             query += " -site:twitter.com"
         if on_wiki == True:
             query += " site:wikipedia.org"
-        urls = search(query, num_results)
+        urls = search(query, num_results, category)
         for i in range(len(urls)):
             url = urls[i]
             url_counter[url] += float(1)/3**float(i)
-        
+
     return [tup[0] for tup in url_counter.most_common(num_results)]
 
 if __name__ == "__main__":
