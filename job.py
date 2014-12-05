@@ -5,7 +5,7 @@ import lib.summarization.tagdef as tagdef
 import string
 
 def main():
-    job  = Job(" #hello_world")
+    job  = Job(" #pangu")
     urls = job.execute()
     print(urls)
 
@@ -27,15 +27,14 @@ class Job:
         return tagdef.lookup(self.hashtag)
 
     def getURLs(self):
-        urls = []
         generator = QueryGenerator()
-        tweets = twitter.retrieveTweetText(self.hashtag, 5)
-        queries = generator.gen_query_list(self.hashtag, tweets)
-        for query in queries: 
-            if isinstance(query, list): 
-                query = " ".join(query)
-            urls = urls + bing.search(query, 5)
-        return urls
+        tweets = twitter.retrieveTweetText('#'+self.hashtag, 5)
+        queries = generator.gen_query_list('#'+self.hashtag, tweets)
+        urls_wiki = bing.group_search(queries, 2, on_wiki=True)
+        urls_news = bing.group_search(queries, 2, category='News', on_wiki=False)
+        urls_web = bing.group_search(queries, 2, on_wiki=False)
+        return {'wiki': urls_wiki, 'news': urls_news, 'web': urls_web}
+
 
 if __name__ == "__main__":
     main()
