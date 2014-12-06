@@ -28,7 +28,7 @@ class Job:
         #results['tagdef-summary'] = self.getTagDefSummary()
         urls = results['references']['ubd'] + results['references']['wiki'] + results['references']['web'] + results['references']['news']
         #results['summary'] = self.getSummary(urls)
-        return results
+        return urls
 
     def getSimilarHashTags(self):
         return twitter.retrieveRelatedHashtags('#' + self.hashtag)
