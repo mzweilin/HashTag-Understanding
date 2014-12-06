@@ -1,22 +1,35 @@
 Expert,#HashTag,Sentence,URL1,URL2,URL3
 Jack,#tcsnycmarathon,TCS New York City Marathon,http://www.tcsnycmarathon.org/,http://en.wikipedia.org/wiki/New_York_City_Marathon,
 Jack,#JeffersonProject,IBM and RPI's project for protecting Lake George in New York,http://ibmresearchnews.blogspot.com/2013/06/the-jefferson-project.html,http://fundforlakegeorge.org/JeffersonProject,http://news.rpi.edu/content/2013/06/27/new-project-aims-make-new-york%E2%80%99s-lake-george-%E2%80%9Csmartest-lake%E2%80%9D-world
-Jack,#qznextbillion,The Next Billion Conference Presented by Quartz,http://thenextbillion.qz.com/,http://thenextbillion.qz.com/newyork2014,
 Jack,#nips2014,"2014 NIPS Conference in Montreal, Canada",https://nips.cc/Conferences/2014/,http://en.wikipedia.org/wiki/Conference_on_Neural_Information_Processing_Systems,https://nips.cc/
 Jack,#UVA,The University of Virginia,http://www.virginia.edu/,http://en.wikipedia.org/wiki/University_of_Virginia,
-Jack,#RollTide,Rallying cry for the Alabama Crimson Tide athletic teams,http://en.wikipedia.org/wiki/Roll_Tide,,
+Jack,#RollTide,Rallying cry for the Alabama Crimson Tide athletic teams,http://en.wikipedia.org/wiki/Roll_Tide,http://www.ibtimes.com/roll-tide-what-does-alabamas-rally-cry-mean-it-most-annoying-slogan-ever-999116,
 Jack,#sf49ers,San Francisco 49ers Football Team,http://en.wikipedia.org/wiki/San_Francisco_49ers,http://www.nfl.com/teams/sanfrancisco49ers/profile?team=SF,
 Jack,#nyk,New York Knicks Basketball Team,http://en.wikipedia.org/wiki/New_York_Knicks,http://www.nba.com/knicks/,
 Jack,#msg,Madison Square Garden or Monosodium glutamate,http://en.wikipedia.org/wiki/Madison_Square_Garden,http://en.wikipedia.org/wiki/Monosodium_glutamate,
 Jack,#tbt,Throwback Thursday,http://www.urbandictionary.com/define.php?term=TBT,,
+Jack,#NLCS,National Leauge Championship Series,http://en.wikipedia.org/wiki/National_League_Championship_Series,,
+Jack,#OITNB,"Orange is the new black, Netflix TV show",http://en.wikipedia.org/wiki/Orange_Is_the_New_Black,http://www.imdb.com/title/tt2372162/,http://www.netflix.com/WiMovie/70242311?locale=en-US
+Jack,#Yankees,New York Yankees Baseball Team,http://newyork.yankees.mlb.com/index.jsp?c_id=nyy,http://en.wikipedia.org/wiki/New_York_Yankees,
+Jack,#DMB,Dave Mathews Band,http://davematthewsband.com/,http://en.wikipedia.org/wiki/Dave_Matthews_Band,
+Jack,#wahoowa,Rallying cry for the UVA athletic teams,http://en.wikipedia.org/wiki/Wahoos,http://www.virginiasports.com/,
 Nick,#WTS,WTS is an abbreviation or slang for want to sell.,http://www.urbandictionary.com/define.php?term=wts ,http://www.internetslang.com/WTS-meaning-definition.asp,
-Nick,#Yosemite,Refers to Apple's latest OS version or Yosemite National Park in California,http://www.nps.gov/yose/index.htm ,http://en.wikipedia.org/wiki/OS_X_Yosemite http://www.yosemitepark.com/,https://www.apple.com/osx/
+Nick,#Yosemite,Refers to Apple's latest OS version or Yosemite National Park in California,http://www.nps.gov/yose/index.htm ,http://en.wikipedia.org/wiki/OS_X_Yosemite, http://www.yosemitepark.com/
 Nick,#sunnyfmdate,Sunnyfmdate is an online kpop radiomusic show,http://www.allkpop.com/article/2014/10/sunny-is-sad-during-sunnys-fm-date-broadcast-and-wishes-for-a-happy-future ,http://sunnysfmdate.blogspot.com/p/sunny-chosen-as-new-dj-of-mbc-fm4us-fm.html,
-Nick,#centralpark,Central park in New York City NYC,http://www.centralparknyc.org/,http://www.centralpark.com/ ,http://en.wikipedia.org/wiki/Central_Park
-Nick,#intelchallenge,The Intel Global Challenge at UC Berkeley is where the best engineers and scientists present how they plan to make the world a better place through their innovations and entrepreneurial skills.,http://entrepreneurship.intel.com/intelchallenge ,http://www.entrepreneurshipchallenge.org/,
-Nick,#lumia,Relates to a line of windows powered mobile devices by Lumia,http://www.microsoft.com/en/mobile/phones/lumia/,,
+Nick,#centralpark,Central park in New York City NYC,http://www.centralparknyc.org/,http://en.wikipedia.org/wiki/Central_Park,
+Nick,#intelchallenge,The Intel Global Challenge at UC Berkeley is where the best engineers and scientists present how they plan to make the world a better place through their innovations and entrepreneurial skills.,https://intelchallenge.me/,http://entrepreneurship.intel.com/intelchallenge,
+Nick,#lumia,Relates to a line of windows powered mobile devices by Lumia,http://www.microsoft.com/en/mobile/phones/lumia/,http://en.wikipedia.org/wiki/Microsoft_Lumia,
 Nick,#election2014,Hashtag for the United States US 2014 midterm elections,http://www.politico.com/p/pages/2014-elections/ ,http://www.realclearpolitics.com/elections/,
-Nick,#lotteduty free,Global chain of duty free stores and duty free online store,http://en.lottedfs.com/about/lottedfs ,http://en.wikipedia.org/wiki/Lotte_(conglomerate),
+Nick,#lottedutyfree,Global chain of duty free stores and duty free online store,http://en.lottedfs.com/about/lottedfs ,http://en.wikipedia.org/wiki/Lotte_(conglomerate),
 Nick,#salvini,Matteo Salvini is an Italian politician and member of the european parliament,http://en.wikipedia.org/wiki/Matteo_Salvini,,
 Nick,#majinbone,Majin bone is a digital card game by Bandai,http://en.wikipedia.org/wiki/Majin_Bone,,
-Weilin,#twitterblades,"The tweet identifier used by the fans of Sheffield United Football Club (SUFC) in twitter, since the club was nicknamed as ""The Blades"" due to the history of steel production in Sheffield.",http://www.sufc.co.uk/,http://en.wikipedia.org/wiki/Sheffield_United_F.C.,https://tagdef.com/twitterblades
+Weilin,#twitterblades,"The tweet identifier used by the fans of Sheffield United Football Club (SUFC) in twitter, since the club was nicknamed as ""The Blades"" due to the history of steel production in Sheffield.",http://www.sufc.co.uk/,http://en.wikipedia.org/wiki/Sheffield_United_F.C.,
+Weilin,#lab14,,,,
+Weilin,,,,,
+Weilin,,,,,
+Weilin,,,,,
+Weilin,,,,,
+Weilin,,,,,
+Weilin,,,,,
+Weilin,,,,,
+Weilin,,,,,
