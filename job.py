@@ -42,6 +42,7 @@ class Job:
 
     def getURLs(self):
         generator = QueryGenerator()
+        generator.set_params(top_k_unigram=3)
         tweets = twitter.retrieveTweetText('#'+self.hashtag, 5)
         queries = generator.gen_query_list('#'+self.hashtag, tweets)
 
