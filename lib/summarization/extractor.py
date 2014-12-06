@@ -39,13 +39,13 @@ def getSentencesFrom(url):
     sentences = map(unicode, sentences)
     return sentences
 
-def cutoffSentences(sentences, threshold = 9):
+def cutoffSentences(sentences, threshold = 7):
     result = []
     tokenizer = Tokenizer("english")
     sentences = list(sentences)
     sentences = map(unicode, sentences)
     for sentence in sentences:
-        if (len(sentence) > threshold):
+        if (len(sentence.split()) > threshold):
             result.append(Sentence(sentence, tokenizer))
 
     return tuple(result)
