@@ -1,7 +1,7 @@
 import logging
 from collections import Counter
 from bing_search_api import BingSearchAPI
-my_key = "MEL5FOrb1H5G1E78YY8N5mkfcvUK2hNBYsZl1aAEEbE"
+my_key = "urTuvjb7b6dFiCmC3Jj6ZAxuX8DqyXwQRDccSEQJVbc"
 bing = BingSearchAPI(my_key)
 
 def main():
