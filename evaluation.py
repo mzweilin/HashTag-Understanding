@@ -2,6 +2,10 @@ import csv
 import numpy
 from job import Job
 
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging
+
 
 
 def evaluate():
@@ -9,10 +13,13 @@ def evaluate():
     retrieved = []
 
     for i in range(1,len(matrix)):
-        print matrix[i][1]
-        job  = Job(matrix[i][1])
-        urls = job.execute()
+        hashtag = matrix[i][1]
+        
+        logger.info(hashtag)
+        logger.info("expected urls: %s %s %s" % (matrix[i][3], matrix[i][4], matrix[i][5]))
 
+        job  = Job(hashtag)
+        urls = job.execute()
         
         url1Retrieved  = 0
         url2Retrieved = 0
@@ -36,11 +43,13 @@ def evaluate():
         #     recall = 1
         # else:
         #     recall = 0
+        logger.info("Recall of %s: %f" % (hashtag, recall))
         retrieved.append(recall)
-
 
     print retrieved
 
+if __name__ == "__main__":
+	evaluate()
         
 
 
