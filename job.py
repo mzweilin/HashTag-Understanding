@@ -24,11 +24,11 @@ class Job:
     def execute(self):
         results = {}
         results['references'] = self.getURLs()
-        #results['similar-tags'] = self.getSimilarHashTags()
-        #results['tagdef-summary'] = self.getTagDefSummary()
-        urls = results['references']['ubd'] + results['references']['wiki'] + results['references']['web'] + results['references']['news']
-        #results['summary'] = self.getSummary(urls)
-        return urls
+        results['similar-tags'] = self.getSimilarHashTags()
+        results['tagdef-summary'] = self.getTagDefSummary()
+        urls = results['references']['wiki'] + results['references']['web'] + results['references']['news']
+        results['summary'] = self.getSummary(urls)
+        return results
 
     def getSimilarHashTags(self):
         return twitter.retrieveRelatedHashtags('#' + self.hashtag)
