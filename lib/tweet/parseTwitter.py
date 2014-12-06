@@ -98,7 +98,6 @@ def retrieveRelatedHashtags(hashtag, hundredsOfTweets=2, filterTrends=True, case
 	else:
 		currTrends = []
 
-	print tags
 	hashtagsDict = {}
 	hashtagNoPound = hashtag.replace("#","")
 
