@@ -1,7 +1,7 @@
-import string, nltk
+import string , nltk
 from collections import Counter
 from nltk.stem.snowball import EnglishStemmer
-from wordsegment import segment
+#from wordsegment import segment
 from lib.tweet import parseTwitter
 
 stemmer = EnglishStemmer()
@@ -50,12 +50,9 @@ class QueryGenerator:
             if len(segs) > 1:
                 q_list.append(' '.join(segs))
 
-        # relatedHashtags = parseTwitter.retrieveRelatedHashtags(hashtag)
-        # if self.segmentation:
-        #     for tag in relatedHashtags:
-        #         segs = segment(tag[1:])
-        #         if len(segs) > 1:
-        #             q_list.append(' '.join(segs))
+        relatedHashtags = parseTwitter.retrieveRelatedHashtags(hashtag)
+
+        
 
 
         # doc_str = ""
@@ -91,6 +88,8 @@ class QueryGenerator:
             q_list.append(' '.join(tops_unigram[1:]))
 
         unigram_top1_count = self.get_sorted_counts(1, 1)[0]
+
+        #q_list.append(relatedHashtags[0])
 
         for n in [2,3]:
             ngram_top1_count = self.get_sorted_counts(n, 1)[0]
